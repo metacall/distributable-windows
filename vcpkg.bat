@@ -18,10 +18,10 @@ echo Python Downloaded
 pause
 
 ::Downloading DOTNET
-echo Downlaoding .NET 5.0 Runtime...
-powershell -Command "invoke-WebRequest https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.10-windows-x64-installer -Outfile dotnet_installer.exe"
-echo DOTNET Downloaded
-pause
+::echo Downlaoding .NET 5.0 Runtime...
+::powershell -Command "invoke-WebRequest https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.10-windows-x64-installer -Outfile dotnet_installer.exe"
+::echo DOTNET Downloaded
+::pause
 
 ::Downloading NODE
 echo Downlaoding NOde.js...
@@ -45,14 +45,14 @@ echo Ruby Installed
 setx PATH="%loc%\dep\Ruby\bin";%PATH%
 pause
 
-::For Python
+::Installation For Python
 echo Installing python...
 mkdir Python
 python_installer.exe/passive TargetDir="%loc%\dep\Python" PrependPath=1
 echo Python installed
 pause
 
-::for DOTNET - still pending ui and targetdir
+::Installation for DOTNET - still unable to install without using ui and in custom targetdir
 echo Installing dotnet..
 mkdir Dotnet
 dotnet_installer.exe
