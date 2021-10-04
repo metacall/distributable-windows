@@ -23,7 +23,7 @@ mkdir Build
 cd Build
 
 
-cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_SECURITY=OFF -G "MinGW Makefiles" ..
+cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_SECURITY=OFF -DOPTION_FORK_SAFE=Off -G "MinGW Makefiles" ..
 cmake --build . 
 
 ::Setting up vcpkg
