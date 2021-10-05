@@ -2,17 +2,13 @@
 
 set /p loc=Enter your desired full location to set up the things: 
 cd %loc%
-git clone https://github.com/skeeto/w64devkit
-cd w64devkit
-echo Make sure you have started DOCKER on your system and then press any key to continue...
-pause >nul
-docker build -t w64devkit .
-docker run --rm w64devkit >w64devkit.zip
 
-cd..
-mkdir w64devkit
-powershell -Command expand-Archive -Path "w64devkit.zip" -DestinationPath "w64devkit_expanded"
+::building w64devkit without docker
+powershell -Command "invoke-WebRequest https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip -Outfile w64devkit_comp.zip"
+powershell -Command expand-Archive -Path "w64devkit_comp.zip" -DestinationPath .
+::set PATH=%loc%\w64devkit\bin
 
+::Cloning Metacall
 git clone https://github.com/metacall/core.git
 
 ::set PATH=%loc%\w64devkit\bin
