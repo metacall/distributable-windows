@@ -1,11 +1,14 @@
 @echo off
 
+
+mkdir Metacall
+cd Metacall
+
 set loc=%cd% 
-cd %loc%
 
 powershell -Command "invoke-WebRequest https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip -Outfile w64devkit_comp.zip"
 powershell -Command expand-Archive -Path "w64devkit_comp.zip" -DestinationPath .
-setx PATH=%loc%\w64devkit\bin
+set PATH=%loc%\w64devkit\bin
 
 ::This line onwards will be added to the build.batch and source directory will be %loc% we need to come out and chaneg dir to 'installers'
 mkdir installers
@@ -25,7 +28,7 @@ pause
 
 ::Downloading DOTNET
 echo Downlaoding .NET 5.0 Runtime...
-powershell -Command "invoke-WebRequest https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-5.0.10-windows-x64-installer -Outfile dotnet_installer.exe"
+powershell -Command "invoke-WebRequest https://dotnet.microsoft.com/download/dotnet/thank-you/sdk-3.1.414-windows-x64-installer -Outfile dotnet_installer.exe"
 echo DOTNET Downloaded
 pause
 
@@ -58,17 +61,12 @@ python_installer.exe/passive TargetDir="%loc%\dep\Python" PrependPath=1
 echo Python installed
 pause
 
-::for DOTNET - still pending ui and targetdir
-echo Installing dotnet..
-mkdir Dotnet
-dotnet_installer.exe
-echo dotnet installed
-
 
 echo Installing dotnet..
 mkdir Dotnet
 ::can be quite or passive
-msiexec.exe /i node_installer.msi INSTALLDIR="%loc%\dep\Dotnet" /passive
+dotnet_installer.exe/s /v" INSTALLDIR=%loc%\dep\Python\Dotnet"
+set PATH=%PATH%;%loc%\dep\Dotnet\bin
 echo dotnet installed
 
 echo All Dependencies Installed
@@ -82,7 +80,7 @@ mkdir Build
 cd Build
 
 ::CMAKE must be installed in the system
-cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_SECURITY=OFF -DOPTION_FORK_SAFE=Off -DOPTION_BUILD_LOADERS_PY=ON -DPython_ROOT_DIR=C:/Users/Sagar Kumar/Documents/For_Meta_call/dep/Python -DOPTION_BUILD_LOADERS_NODE=ON -DOPTION_BUILD_LOADERS_CS=ON -DOPTION_BUILD_LOADERS_RB=ON -DOPTION_BUILD_LOADERS_TS=ON -G "MinGW Makefiles" ..
+cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_SECURITY=OFF -DOPTION_FORK_SAFE=Off -DOPTION_BUILD_LOADERS_PY=ON -DPython_ROOT_DIR=%loc%/dep/Python -DOPTION_BUILD_LOADERS_NODE=ON -DOPTION_BUILD_LOADERS_CS=ON -DOPTION_BUILD_LOADERS_RB=ON -DOPTION_BUILD_LOADERS_TS=ON -G "MinGW Makefiles" ..
 cmake --build .
 
 ::Setting up vcpkg
