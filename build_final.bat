@@ -62,13 +62,13 @@ pause
 
 ::For Python
 echo Installing python...
-python_installer.exe/passive TargetDir="%cd%\dep\Python" PrependPath=1
+python_installer.exe/quiet TargetDir="%cd%\dep\Python" PrependPath=1
 echo Python installed
 pause
 
 echo Installing dotnet..
 ::can be quite or passive
-dotnet_installer.exe/s /v" INSTALLDIR=%loc%\dep\Dotnet"
+dotnet_installer.exe/passive /installdir=%loc%\dep\Dotnet
 set PATH=%PATH%;%loc%\dep\Dotnet\bin
 echo dotnet installed
 
@@ -76,7 +76,7 @@ echo dotnet installed
 echo Installing Nodejs..
 mkdir Dotnet
 ::can be quite or passive
-msiexec.exe /i node_installer.msi /INSTALLDIR="%loc%\dep\Nodejs" /quiete
+msiexec.exe /i node_installer.msi /INSTALLDIR="%loc%\dep\Nodejs" /quiet
 set PATH=%PATH%;%loc%\dep\Nodejs\bin
 echo dotnet installed
 
