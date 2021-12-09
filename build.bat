@@ -1,105 +1,90 @@
 @echo off
 
-mkdir Metacall
-cd Metacall
+mkdir metacall
+cd metacall
+
+echo Downloading Compiler and Build System
 
 set loc=%cd%
-echo Installing w64devkit
-echo %loc%a
-powershell -Command "invoke-WebRequest https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip -Outfile w64devkit_comp.zip"
-powershell -Command expand-Archive -Path "w64devkit_comp.zip" -DestinationPath .
-set PATH=%loc%\w64devkit\bin
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip', './w64devkit_comp.zip')"
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "w64devkit_comp.zip" -DestinationPath .
+set PATH=%PATH%;%loc%\w64devkit\bin
+del w64devkit_comp.zip
 
-This line onwards will be added to the build.batch and source directory will be %loc% we need to come out and chaneg dir to 'installers'
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')"
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "cmake.zip" -DestinationPath .
+set PATH=%PATH%;%loc%\cmake-3.22.1-windows-x86_64\bin
+del cmake.zip
+
+echo Downloading Dependencies
+
 mkdir installers
 cd installers
-echo Make sure you are connected to a network 
-pause
-echo Downlaoding Ruby 3.0.2-1 ...
-powershell -Command "invoke-WebRequest https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.2-1/rubyinstaller-devkit-3.0.2-1-x64.exe -Outfile ruby_installer.exe"
-echo Ruby Downloaded
-pause
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.2-1/rubyinstaller-devkit-3.0.2-1-x64.exe', './ruby_installer.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/5d8afe47-8a54-4ca0-b34d-57120fa66d23/114044f7cfa4d581a49cefc47f3a8717/dotnet-runtime-5.0.11-win-x86.exe', './dotnet_installer.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/dist/v14.18.0/node-v14.18.0-x64.msi', './node_installer.msi')"
 
-Downloading PYTHON
-echo Downlaoding python 3.9.7 ...
-powershell -Command "invoke-WebRequest https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe -Outfile python_installer.exe"
-echo Python Downloaded
-pause
+echo Installing Runtimes
 
-Downloading DOTNET
-echo Downlaoding .NET 5.0 Runtime...
-powershell -Command "invoke-WebRequest https://download.visualstudio.microsoft.com/download/pr/5d8afe47-8a54-4ca0-b34d-57120fa66d23/114044f7cfa4d581a49cefc47f3a8717/dotnet-runtime-5.0.11-win-x86.exe -Outfile dotnet_installer.exe"
-echo DOTNET Downloaded
-pause
-
-Downloading NODE
-echo Downlaoding NOde.js...
-powershell -Command "invoke-WebRequest https://nodejs.org/dist/v14.18.0/node-v14.18.0-x64.msi -Outfile node_installer.msi"
-echo DOTNET Downloaded
-pause
-
-::come out of intallations and create and go to dep
-cd..
-mkdir dep
-cd dep
-mkdir Ruby
-mkdir Python
-mkdir Dotnet
+cd ..
+mkdir runtimes
+cd runtimes
+mkdir ruby
+mkdir python
+mkdir dotnet
 mkdir nodejs
-cd..
+
+cd ..
 cd installers
 
-::Installation for Ruby
-echo Going to install all dependencies via GUI, don't close this window.
-echo Installing Ruby...
+ruby_installer.exe /dir="%loc%\runtimes\ruby" /VERYSILENT
+set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
-::we can also add verysilent- for no UI and Silent-for lest UI 
+python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1
+set PATH=%PATH%;%loc%\runtimes\python\bin
 
-ruby_installer.exe /dir="%loc%\dep\Ruby" /VERYSILENT
-echo Ruby Installed
-set PATH=%PATH%;%loc%\dep\Ruby\bin
-pause
+dotnet_installer.exe /passive /installdir=%loc%\runtimes\dotnet
+set PATH=%PATH%;%loc%\runtimes\dotnet\bin
 
-::For Python
-echo Installing python...
-python_installer.exe/quiet TargetDir="%cd%\dep\Python" PrependPath=1
-echo Python installed
-pause
+msiexec.exe /i node_installer.msi /INSTALLDIR="%loc%\runtimes\nodejs" /quiet
+set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
-echo Installing dotnet..
-::can be quite or passive
-dotnet_installer.exe/passive /installdir=%loc%\dep\Dotnet
-set PATH=%PATH%;%loc%\dep\Dotnet\bin
-echo dotnet installed
+echo Building MetaCall
 
-:: needs admin controls
-echo Installing Nodejs..
-mkdir Dotnet
-::can be quite or passive
-msiexec.exe /i node_installer.msi /INSTALLDIR="%loc%\dep\Nodejs" /quiet
-set PATH=%PATH%;%loc%\dep\Nodejs\bin
-echo dotnet installed
+cd ..
 
-echo All Dependencies Installed
+rem TODO
+rem rmdir installers
 
-cd..
+git clone --depth 1 https://github.com/metacall/core.git
+mkdir core\build
+cd core\build
 
-git clone https://github.com/metacall/core.git
+rem TODO
+rem NODE, TS, CS, SCRIPTS, TESTS
+cmake -Wno-dev ^
+	-DCMAKE_BUILD_TYPE=Release ^
+	-DOPTION_BUILD_SECURITY=OFF ^
+	-DOPTION_FORK_SAFE=OFF ^
+	-DOPTION_BUILD_SCRIPTS=OFF ^
+	-DOPTION_BUILD_TESTS=OFF ^
+	-DOPTION_BUILD_EXAMPLES=OFF ^
+	-DOPTION_BUILD_LOADERS_PY=ON ^
+	-DPython_ROOT_DIR="%loc%\runtimes\python" ^
+	-DOPTION_BUILD_LOADERS_NODE=OFF ^
+	-DOPTION_BUILD_LOADERS_CS=OFF ^
+	-DOPTION_BUILD_LOADERS_RB=ON ^
+	-DOPTION_BUILD_LOADERS_TS=OFF ^
+	-DCMAKE_INSTALL_PREFIX="%loc%" ^
+	-G "MinGW Makefiles" ..
+cmake --build . --target install
+cd ..\..
+rmdir core\build
 
-mkdir bin
-cd core
-mkdir Build
+rem TODO
+rem rmdir cmake-3.22.1-windows-x86_64
+rem rmdir w64devkit
 
-cd Build
-
-::CMAKE must be installed in the system
-cmake -Wno-dev -DCMAKE_BUILD_TYPE=Release -DOPTION_BUILD_SECURITY=OFF -DOPTION_FORK_SAFE=Off -DOPTION_BUILD_LOADERS_PY=ON -DPython_ROOT_DIR=%loc%/dep/Python -DOPTION_BUILD_LOADERS_NODE=ON -DOPTION_BUILD_LOADERS_CS=ON -DOPTION_BUILD_LOADERS_RB=ON -DOPTION_BUILD_LOADERS_TS=ON -DCMAKE_INSTALL_PREFIX="%loc%/bin" -G "MinGW Makefiles" ..
-cmake --build .
-
-::Setting up vcpkg
-::git clone https://github.com/Microsoft/vcpkg.git
-::building vcpkg and using disableMetrics to avoid data share
-::.\vcpkg\bootstrap-vcpkg.bat -disableMetrics  
-
-echo Your things are ready 
+echo MetaCall Built Successfully
 pause >nul
