@@ -12,7 +12,6 @@ echo Checking Compiler and Build System
 rem Devkit is also required for building Ruby
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip', './w64devkit.zip')"
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "w64devkit.zip" -DestinationPath .
-set PATH=%PATH%;%loc%\w64devkit\bin
 del w64devkit.zip
 
 where /Q cmake
@@ -58,7 +57,8 @@ rem Build Ruby with MSVC
 git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
 cd %loc%\runtimes\ruby_msvc
 chcp 1252
-win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
+win32\configure --prefix="%loc%\runtimes\ruby"
+set PATH=%PATH%;%loc%\w64devkit\bin
 nmake
 nmake check
 nmake install
