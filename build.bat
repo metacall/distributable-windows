@@ -18,40 +18,6 @@ cd %loc%\dependencies
 
 echo Checking Compiler and Build System
 
-rem Devkit is also required for building Ruby
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip', './w64devkit.zip')"
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "w64devkit.zip" -DestinationPath .
-del w64devkit.zip
-
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.5-1/rubyinstaller-2.7.5-1-x64.exe', './ruby_installer.exe')"
-
-rem Install Ruby with DevKit
-ruby_installer.exe /dir="%loc%\runtimes\ruby_mingw" /VERYSILENT
-
-set OLDPATH=%PATH%
-set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
-
-rem Build Ruby with MSVC
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.zip', './ruby_src.zip')"
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "ruby_src.zip" -DestinationPath .
-del ruby_src.zip
-cd %loc%\dependencies\ruby-2.7.5
-set PATH=%PATH%;%loc%\dependencies\w64devkit\bin
-chcp 1252
-win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
-nmake
-nmake check
-nmake install
-cd %loc%\dependencies
-rmdir /S /Q %loc%\dependencies\ruby-2.7.5
-set PATH=%OLDPATH%;%loc%\runtimes\ruby\bin
-
-dir %loc%\runtimes\ruby\bin
-
-exit 1
-
-
-
 where /Q cmake
 if %ERRORLEVEL% EQU 0 (goto skip_build_system)
 
@@ -67,7 +33,7 @@ echo Downloading Dependencies
 
 mkdir %loc%\dependencies
 cd %loc%\dependencies
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.5-1/rubyinstaller-2.7.5-1-x64.exe', './ruby_installer.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')"
@@ -81,6 +47,16 @@ mkdir %loc%\runtimes\dotnet
 mkdir %loc%\runtimes\nodejs
 
 cd %loc%\dependencies
+
+rem Install 7zip (PowerShell) for Ruby
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Install-PackageProvider" -Name NuGet -MinimumVersion 2.8.5.201 -Force; Set-PSRepository -Name 'PSGallery' -SourceLocation "https://www.powershellgallery.com/api/v2" -InstallationPolicy Trusted
+powershell -Command "Install-Module" -Name 7Zip4PowerShell -Force
+
+rem Install Ruby
+powershell -Command "Expand-7Zip" -ArchiveFileName "ruby-mswin.7z" -DestinationPath "%loc%\runtimes\dotnet" -Remove
+robocopy /move /e %loc%\runtimes\ruby\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
+rmdir %loc%\runtimes\ruby\ruby-mswin
+set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 @REM rem Install Python
 @REM python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
@@ -105,12 +81,11 @@ git clone --depth 1 https://github.com/metacall/core.git
 rem Patch for FindRuby.cmake
 set "escaped_loc=%loc:\=/%"
 
-rem TODO: Not working with MSVC, we have to rebuild Ruby with MSVC
-echo set(Ruby_VERSION 2.7.0)>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_VERSION 3.1.0)>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> %loc%\core\cmake\FindRuby.cmake
-echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-2.7.0;%escaped_loc%/runtimes/ruby/include/ruby-2.7.0/x64-mingw32")>> %loc%\core\cmake\FindRuby.cmake
-echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/libx64-msvcrt-ruby270.dll.a")>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.1.0;%escaped_loc%/runtimes/ruby/include/ruby-3.1.0/x64-mswin64_140")>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")>> %loc%\core\cmake\FindRuby.cmake
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindRuby.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> %loc%\core\cmake\FindRuby.cmake
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> %loc%\core\cmake\FindRuby.cmake
@@ -130,7 +105,7 @@ cmake -Wno-dev ^
 	-DPython_ROOT_DIR="%loc%\runtimes\python" ^
 	-DOPTION_BUILD_LOADERS_NODE=OFF ^
 	-DOPTION_BUILD_LOADERS_CS=OFF ^
-	-DOPTION_BUILD_LOADERS_RB=OFF ^
+	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" ..
