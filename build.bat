@@ -1,5 +1,8 @@
 @echo off
 
+rem Use all the cores when building
+set CL=/MP
+
 mkdir metacall
 cd metacall
 set loc=%cd%
@@ -45,26 +48,33 @@ mkdir nodejs
 cd ..
 cd dependencies
 
+rem Install Ruby with DevKit
 ruby_installer.exe /dir="%loc%\runtimes\ruby_mingw" /VERYSILENT
 
 set OLDPATH=%PATH%
 set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
 
-rem TODO: Build Ruby with MSVC
-rem git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
-rem cd %loc%\runtimes\ruby
-rem chcp 1252
-rem mkdir %loc%\runtimes\ruby
-rem win32\configure --prefix="%loc%\runtimes\ruby" --target=i686-mswin32
-
+rem Build Ruby with MSVC
+git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
+cd %loc%\runtimes\ruby
+chcp 1252
+win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
+nmake
+nmake check
+nmake install
+cd %loc%\dependencies
+del %loc%\runtimes\ruby_msvc
 set PATH=%OLDPATH%;%loc%\runtimes\ruby\bin
 
+rem Install Python
 python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
 set PATH=%PATH%;%loc%\runtimes\python\bin
 
+rem Install DotNet
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet
 set PATH=%PATH%;%loc%\runtimes\dotnet\bin
 
+rem Install NodeJS
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs
 robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
 rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
