@@ -1,0 +1,8 @@
+on: [tag]
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Build MetaCall Distributabe Windows
+        run: build.bat
