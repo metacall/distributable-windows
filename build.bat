@@ -56,7 +56,7 @@ set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
 
 rem Build Ruby with MSVC
 git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
-cd %loc%\runtimes\ruby
+cd %loc%\runtimes\ruby_msvc
 chcp 1252
 win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
 nmake
