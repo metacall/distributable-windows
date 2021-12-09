@@ -7,12 +7,50 @@ mkdir metacall
 cd metacall
 set loc=%cd%
 
+mkdir %loc%\runtimes
+mkdir %loc%\runtimes\ruby
+mkdir %loc%\runtimes\python
+mkdir %loc%\runtimes\dotnet
+mkdir %loc%\runtimes\nodejs
+
+mkdir %loc%\dependencies
+cd %loc%\dependencies
+
 echo Checking Compiler and Build System
 
 rem Devkit is also required for building Ruby
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip', './w64devkit.zip')"
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "w64devkit.zip" -DestinationPath .
 del w64devkit.zip
+
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.5-1/rubyinstaller-2.7.5-1-x64.exe', './ruby_installer.exe')"
+
+rem Install Ruby with DevKit
+ruby_installer.exe /dir="%loc%\runtimes\ruby_mingw" /VERYSILENT
+
+set OLDPATH=%PATH%
+set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
+
+rem Build Ruby with MSVC
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.5.zip', './ruby_src.zip')"
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "ruby_src.zip" -DestinationPath .
+del ruby_src.zip
+cd %loc%\dependencies\ruby-2.7.5
+set PATH=%PATH%;%loc%\dependencies\w64devkit\bin
+chcp 1252
+win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
+nmake
+nmake check
+nmake install
+cd %loc%\dependencies
+rmdir /S /Q %loc%\dependencies\ruby-2.7.5
+set PATH=%OLDPATH%;%loc%\runtimes\ruby\bin
+
+dir %loc%\runtimes\ruby\bin
+
+exit 1
+
+
 
 where /Q cmake
 if %ERRORLEVEL% EQU 0 (goto skip_build_system)
@@ -27,58 +65,36 @@ del cmake.zip
 
 echo Downloading Dependencies
 
-mkdir dependencies
-cd dependencies
+mkdir %loc%\dependencies
+cd %loc%\dependencies
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.5-1/rubyinstaller-2.7.5-1-x64.exe', './ruby_installer.exe')"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')"
+@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
+@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
+@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')"
 
 echo Installing Runtimes
 
-cd ..
-mkdir runtimes
-cd runtimes
-mkdir ruby
-mkdir python
-mkdir dotnet
-mkdir nodejs
+mkdir %loc%\runtimes
+mkdir %loc%\runtimes\ruby
+mkdir %loc%\runtimes\python
+mkdir %loc%\runtimes\dotnet
+mkdir %loc%\runtimes\nodejs
 
-cd ..
-cd dependencies
-
-rem Install Ruby with DevKit
-ruby_installer.exe /dir="%loc%\runtimes\ruby_mingw" /VERYSILENT
-
-set OLDPATH=%PATH%
-set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
-
-rem Build Ruby with MSVC
-git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
-cd %loc%\runtimes\ruby_msvc
-chcp 1252
-win32\configure --prefix="%loc%\runtimes\ruby" --target=x64-mswin64
-set PATH=%PATH%;%loc%\w64devkit\bin
-nmake
-nmake check
-nmake install
 cd %loc%\dependencies
-del %loc%\runtimes\ruby_msvc
-set PATH=%OLDPATH%;%loc%\runtimes\ruby\bin
 
-rem Install Python
-python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
-set PATH=%PATH%;%loc%\runtimes\python\bin
+@REM rem Install Python
+@REM python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
+@REM set PATH=%PATH%;%loc%\runtimes\python\bin
 
-rem Install DotNet
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet
-set PATH=%PATH%;%loc%\runtimes\dotnet\bin
+@REM rem Install DotNet
+@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet
+@REM set PATH=%PATH%;%loc%\runtimes\dotnet\bin
 
-rem Install NodeJS
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs
-robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
-set PATH=%PATH%;%loc%\runtimes\nodejs\bin
+@REM rem Install NodeJS
+@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs
+@REM robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
+@REM rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
+@REM set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
 echo Building MetaCall
 
