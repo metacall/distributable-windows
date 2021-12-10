@@ -1,0 +1,9 @@
+name: Demo
+on: [pull]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: windows-2020
+    steps:
+      -name: Building Metacall
+       shell: cmd
+       run: call
