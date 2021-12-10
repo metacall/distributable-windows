@@ -57,6 +57,19 @@ echo Building MetaCall
 cd ..
 
 git clone --depth 1 https://github.com/metacall/core.git
+
+rem Patch for Ruby
+set "escaped_loc=%loc:\=/%"
+
+echo set(Ruby_VERSION 2.7.0)>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-2.7.0;%escaped_loc%/runtimes/ruby/include/ruby-2.7.0/x64-mingw32")>> %loc%\core\cmake\FindRuby.cmake
+echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/libx64-msvcrt-ruby270.dll.a")>> %loc%\core\cmake\FindRuby.cmake
+echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindRuby.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> %loc%\core\cmake\FindRuby.cmake
+echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> %loc%\core\cmake\FindRuby.cmake
+
 mkdir core\build
 cd core\build
 
@@ -73,6 +86,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
 	-DOPTION_BUILD_LOADERS_CS=ON ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
+
 	-DOPTION_BUILD_LOADERS_TS=ON ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" ..
@@ -82,6 +96,6 @@ cd ..\..
 rem TODO: Delete unnecesary data and/or build the tarball
 rem rmdir /S /Q core\build
 rem rmdir /S /Q dependencies
-rem if exist %loc%\cmake-3.22.1-windows-x86_64\ (rmdir /S /Q cmake-3.22.1-windows-x86_64)
+rem rmdir /S /Q cmake-3.22.1-windows-x86_64
 
 echo MetaCall Built Successfully
