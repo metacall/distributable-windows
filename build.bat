@@ -6,9 +6,16 @@ set loc=%cd%
 
 echo Checking Compiler and Build System
 
+rem Devkit is also required for building Ruby
+powershell -Command "invoke-WebRequest https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip -Outfile w64devkit.zip"
+powershell -Command expand-Archive -Path "w64devkit.zip" -DestinationPath .
+set PATH=%loc%\w64devkit\bin
+del w64devkit.zip
+
 where /Q cmake
 if %ERRORLEVEL% EQU 0 (goto skip_build_system)
 
+rem Install CMake if not found
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')"
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "cmake.zip" -DestinationPath .
 set PATH=%PATH%;%loc%\cmake-3.22.1-windows-x86_64\bin
@@ -38,8 +45,19 @@ mkdir nodejs
 cd ..
 cd dependencies
 
-ruby_installer.exe /dir="%loc%\runtimes\ruby" /VERYSILENT
-set PATH=%PATH%;%loc%\runtimes\ruby\bin
+ruby_installer.exe /dir="%loc%\runtimes\ruby_mingw" /VERYSILENT
+
+set OLDPATH=%PATH%
+set PATH=%PATH%;%loc%\runtimes\ruby_mingw\bin
+
+rem TODO: Build Ruby with MSVC
+rem git clone --depth 1 --branch v2_7_5 https://github.com/ruby/ruby.git %loc%\runtimes\ruby_msvc
+rem cd %loc%\runtimes\ruby
+rem chcp 1252
+rem mkdir %loc%\runtimes\ruby
+rem win32\configure --prefix="%loc%\runtimes\ruby" --target=i686-mswin32
+
+set PATH=%OLDPATH%;%loc%\runtimes\ruby\bin
 
 python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
 set PATH=%PATH%;%loc%\runtimes\python\bin
@@ -58,9 +76,10 @@ cd ..
 
 git clone --depth 1 https://github.com/metacall/core.git
 
-rem Patch for Ruby
+rem Patch for FindRuby.cmake
 set "escaped_loc=%loc:\=/%"
 
+rem TODO: Not working with MSVC, we have to rebuild Ruby with MSVC
 echo set(Ruby_VERSION 2.7.0)>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> %loc%\core\cmake\FindRuby.cmake
@@ -73,29 +92,29 @@ echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> %loc%\co
 mkdir core\build
 cd core\build
 
-rem TODO: SCRIPTS, TESTS
+rem TODO: NODE, CS, RB, TS
 cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
 	-DOPTION_FORK_SAFE=OFF ^
-	-DOPTION_BUILD_SCRIPTS=OFF ^
-	-DOPTION_BUILD_TESTS=OFF ^
+	-DOPTION_BUILD_SCRIPTS=ON ^
+	-DOPTION_BUILD_TESTS=ON ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DPython_ROOT_DIR="%loc%\runtimes\python" ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
-	-DOPTION_BUILD_LOADERS_CS=ON ^
-	-DOPTION_BUILD_LOADERS_RB=ON ^
-
-	-DOPTION_BUILD_LOADERS_TS=ON ^
+	-DOPTION_BUILD_LOADERS_CS=OFF ^
+	-DOPTION_BUILD_LOADERS_RB=OFF ^
+	-DOPTION_BUILD_LOADERS_TS=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" ..
 cmake --build . --target install
 cd ..\..
 
-rem TODO: Delete unnecesary data and/or build the tarball
-rem rmdir /S /Q core\build
-rem rmdir /S /Q dependencies
-rem rmdir /S /Q cmake-3.22.1-windows-x86_64
+rem Delete unnecesary data
+rmdir /S /Q %loc%\core
+rmdir /S /Q %loc%\dependencies
+rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
+rmdir /S /Q %loc%\w64devkit
 
 echo MetaCall Built Successfully
