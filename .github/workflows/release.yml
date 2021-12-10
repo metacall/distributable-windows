@@ -4,6 +4,7 @@ on:
     - 'v*.*.*'
 jobs:
   build:
+    shell: pwsh
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
