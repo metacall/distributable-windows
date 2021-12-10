@@ -9,7 +9,7 @@ echo Checking Compiler and Build System
 rem Devkit is also required for building Ruby
 powershell -Command "invoke-WebRequest https://github.com/skeeto/w64devkit/releases/download/v1.10.0/w64devkit-1.10.0.zip -Outfile w64devkit.zip"
 powershell -Command expand-Archive -Path "w64devkit.zip" -DestinationPath .
-set PATH=%loc%\w64devkit\bin
+set PATH=%PATH%;%loc%\w64devkit\bin
 del w64devkit.zip
 
 where /Q cmake
