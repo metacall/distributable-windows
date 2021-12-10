@@ -4,10 +4,10 @@ on:
     - 'v*.*.*'
 jobs:
   build:
-    shell: pwsh
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ilammy/msvc-dev-cmd@v1
       - name: Build MetaCall Distributabe Windows
+        shell: cmd
         run: .\build.bat
