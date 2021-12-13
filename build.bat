@@ -60,7 +60,7 @@ set PATH=%PATH%;%loc%\runtimes\python
 
 rem Install DotNet
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet || goto :error
-set PATH=%PATH%;%loc%\runtimes\dotnet\bin
+set PATH=%PATH%;%loc%\runtimes\dotnet
 
 @REM rem Install NodeJS
 @REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
@@ -99,7 +99,7 @@ echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> 
 mkdir %loc%\core\build
 cd %loc%\core\build
 
-rem TODO: CS, NODE, TS
+rem TODO: NODE, TS
 cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
@@ -109,7 +109,8 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=OFF ^
-	-DOPTION_BUILD_LOADERS_CS=OFF ^
+	-DOPTION_BUILD_LOADERS_CS=ON ^
+	-DDOTNET_CORE_PATH="%loc%\runtimes\dotnet\shared\Microsoft.NETCore.App\5.0.12\" ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
