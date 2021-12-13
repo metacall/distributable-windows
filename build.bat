@@ -141,6 +141,7 @@ rem Delete unnecesary data
 rmdir /S /Q %loc%\core
 rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
+rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo MetaCall Built Successfully
 dir /b /s /a %loc%
