@@ -44,7 +44,6 @@ rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
 7z x %loc%\dependencies\ruby-mswin.7z
 robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir /S /Q %loc%\dependencies\ruby-mswin
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
@@ -92,10 +91,10 @@ echo set(Python_VERSION 3.9.7)>> %loc%\core\cmake\FindPython.cmake
 echo set(Python_ROOT_DIR "%escaped_loc%/runtimes/python")>> %loc%\core\cmake\FindPython.cmake
 echo set(Python_EXECUTABLE "%escaped_loc%/runtimes/python/python.exe")>> %loc%\core\cmake\FindPython.cmake
 echo set(Python_INCLUDE_DIRS "%escaped_loc%/runtimes/python/include")>> %loc%\core\cmake\FindPython.cmake
-echo set(Python_LIBRARY "%escaped_loc%/runtimes/python/libs/python39.lib")>> %loc%\core\cmake\FindPython.cmake
+echo set(Python_LIBRARIES "%escaped_loc%/runtimes/python/libs/python39.lib")>> %loc%\core\cmake\FindPython.cmake
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindPython.cmake
-echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> %loc%\core\cmake\FindPython.cmake
-echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS)>> %loc%\core\cmake\FindPython.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> %loc%\core\cmake\FindPython.cmake
+echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> %loc%\core\cmake\FindPython.cmake
 
 mkdir %loc%\core\build
 cd %loc%\core\build
