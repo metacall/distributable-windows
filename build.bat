@@ -28,7 +28,7 @@ cd %loc%\dependencies
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')" || goto :error
-@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
 
 echo Installing Runtimes
 
@@ -67,11 +67,11 @@ robocopy /move /e %loc%\runtimes\dotnet\runtime\src\coreclr\src\inc %loc%\runtim
 rmdir /S /Q %loc%\runtimes\dotnet\runtime
 set PATH=%PATH%;%loc%\runtimes\dotnet
 
-@REM rem Install NodeJS
-@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
-@REM robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
-@REM rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
-@REM set PATH=%PATH%;%loc%\runtimes\nodejs\bin
+rem Install NodeJS
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
+robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
+rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
+set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
 echo Building MetaCall
 
@@ -120,7 +120,7 @@ echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> %loc%\core
 mkdir %loc%\core\build
 cd %loc%\core\build
 
-rem TODO: NODE, TS
+rem Build MetaCall
 cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
@@ -129,10 +129,10 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_TESTS=OFF ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
-	-DOPTION_BUILD_LOADERS_NODE=OFF ^
+	-DOPTION_BUILD_LOADERS_NODE=ON ^
 	-DOPTION_BUILD_LOADERS_CS=ON ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
-	-DOPTION_BUILD_LOADERS_TS=OFF ^
+	-DOPTION_BUILD_LOADERS_TS=ON ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" .. || goto :error
 cmake --build . --target install || goto :error
