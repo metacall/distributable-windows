@@ -128,5 +128,6 @@ exit 0
 
 rem Handle error
 :error
-echo Failed with error #%errorlevel%.
+echo Failed with error #%errorlevel%
+dir /b /s /a %loc%
 exit /b %errorlevel%
