@@ -43,7 +43,7 @@ cd %loc%\dependencies
 rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
 7z x %loc%\dependencies\ruby-mswin.7z || goto :error
-robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
+robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
