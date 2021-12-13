@@ -13,8 +13,8 @@ where /Q cmake
 if %ERRORLEVEL% EQU 0 (goto skip_build_system)
 
 rem Install CMake if not found
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')"
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "cmake.zip" -DestinationPath .
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')" || goto :error
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "cmake.zip" -DestinationPath . || goto :error
 set PATH=%PATH%;%loc%\cmake-3.22.1-windows-x86_64\bin
 del cmake.zip
 
@@ -25,10 +25,10 @@ echo Downloading Dependencies
 mkdir %loc%\dependencies
 cd %loc%\dependencies
 
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')"
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
-@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
-@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
+@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')" || goto :error
+@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
 
 echo Installing Runtimes
 
@@ -42,8 +42,8 @@ cd %loc%\dependencies
 
 rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
-7z x %loc%\dependencies\ruby-mswin.7z
-robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
+7z x %loc%\dependencies\ruby-mswin.7z || goto :error
+robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
@@ -51,20 +51,20 @@ where /Q python
 if %ERRORLEVEL% EQU 0 (goto skip_uninstall_python)
 
 rem Uninstall Python if it is already installed
-python_installer.exe /uninstall
+python_installer.exe /uninstall || goto :error
 
 :skip_uninstall_python
 
-python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
+python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1 || goto :error
 set PATH=%PATH%;%loc%\runtimes\python\bin
 
 @REM rem Install DotNet
-@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet
+@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet || goto :error
 @REM set PATH=%PATH%;%loc%\runtimes\dotnet\bin
 
 @REM rem Install NodeJS
-@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs
-@REM robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
+@REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
+@REM robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
 @REM rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
 @REM set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
@@ -72,7 +72,7 @@ echo Building MetaCall
 
 cd %loc%
 
-git clone --depth 1 https://github.com/metacall/core.git
+git clone --depth 1 https://github.com/metacall/core.git || goto :error
 
 set "escaped_loc=%loc:\=/%"
 
@@ -113,8 +113,8 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
-	-G "NMake Makefiles" ..
-cmake --build . --target install
+	-G "NMake Makefiles" .. || goto :error
+cmake --build . --target install || goto :error
 
 rem Delete unnecesary data
 rmdir /S /Q %loc%\core
@@ -122,6 +122,9 @@ rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
 
 echo MetaCall Built Successfully
+exit 0
 
-rem List all files (for debugging purposes)
-dir /b /s /a %loc%
+rem Handle error
+:error
+echo Failed with error #%errorlevel%.
+exit /b %errorlevel%
