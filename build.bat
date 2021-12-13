@@ -122,6 +122,7 @@ rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
 
 echo MetaCall Built Successfully
+dir /b /s /a %loc%
 exit 0
 
 rem Handle error
