@@ -60,6 +60,11 @@ set PATH=%PATH%;%loc%\runtimes\python
 
 rem Install DotNet
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet || goto :error
+git clone --branch v5.0.12 --depth 1 --single-branch https://github.com/dotnet/runtime.git %loc%\runtimes\dotnet\runtime
+mkdir %loc%\runtimes\dotnet\include
+robocopy /move /e %loc%\runtimes\dotnet\runtime\src\coreclr\src\pal %loc%\runtimes\dotnet\include\pal /NFL /NDL /NJH /NJS /NC /NS /NP
+robocopy /move /e %loc%\runtimes\dotnet\runtime\src\coreclr\src\inc %loc%\runtimes\dotnet\include\inc /NFL /NDL /NJH /NJS /NC /NS /NP
+rmdir /S /Q %loc%\runtimes\dotnet\runtime
 set PATH=%PATH%;%loc%\runtimes\dotnet
 
 @REM rem Install NodeJS
@@ -99,9 +104,10 @@ echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> 
 rem Patch for FindCoreCLR.cmake
 echo set(CoreCLR_VERSION 5.0.12)>> %loc%\core\cmake\FindCoreCLR.cmake
 echo set(DOTNET_CORE_PATH "%escaped_loc%/runtimes/dotnet/shared/Microsoft.NETCore.App/5.0.12")>> %loc%\core\cmake\FindCoreCLR.cmake
+echo set(CORECLR_INCLUDE_DIR "%escaped_loc%/runtimes/dotnet/include")>> %loc%\core\cmake\FindCoreCLR.cmake
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindCoreCLR.cmake
-echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(CoreCLR REQUIRED_VARS DOTNET_CORE_PATH VERSION_VAR CoreCLR_VERSION)>> %loc%\core\cmake\FindCoreCLR.cmake
-echo mark_as_advanced(DOTNET_CORE_PATH)>> %loc%\core\cmake\FindCoreCLR.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(CoreCLR REQUIRED_VARS DOTNET_CORE_PATH CORECLR_INCLUDE_DIR VERSION_VAR CoreCLR_VERSION)>> %loc%\core\cmake\FindCoreCLR.cmake
+echo mark_as_advanced(DOTNET_CORE_PATH CORECLR_INCLUDE_DIR)>> %loc%\core\cmake\FindCoreCLR.cmake
 
 rem Patch for FindDotNET.cmake
 echo set(DOTNET_VERSION 5.0.12)>> %loc%\core\cmake\FindDotNET.cmake
