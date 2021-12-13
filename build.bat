@@ -1,5 +1,4 @@
-@echo on
-rem TODO: @echo off
+@echo off
 
 rem Use all the cores when building
 set CL=/MP
@@ -45,7 +44,7 @@ rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
 7z x %loc%\dependencies\ruby-mswin.7z
 robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir %loc%\dependencies\ruby-mswin
+rmdir /S /Q %loc%\dependencies\ruby-mswin
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
@@ -68,9 +67,9 @@ cd ..
 
 git clone --depth 1 https://github.com/metacall/core.git
 
-rem Patch for FindRuby.cmake
 set "escaped_loc=%loc:\=/%"
 
+rem Patch for FindRuby.cmake
 echo set(Ruby_VERSION 3.1.0)>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> %loc%\core\cmake\FindRuby.cmake
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> %loc%\core\cmake\FindRuby.cmake
@@ -79,6 +78,16 @@ echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby310.
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindRuby.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> %loc%\core\cmake\FindRuby.cmake
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> %loc%\core\cmake\FindRuby.cmake
+
+rem Patch for FindPython.cmake
+echo set(Python_VERSION 3.9.7)>> %loc%\core\cmake\FindPython.cmake
+echo set(Python_ROOT_DIR "%escaped_loc%/runtimes/python")>> %loc%\core\cmake\FindPython.cmake
+echo set(Python_EXECUTABLE "%escaped_loc%/runtimes/python/python.exe")>> %loc%\core\cmake\FindPython.cmake
+echo set(Python_INCLUDE_DIRS "%escaped_loc%/runtimes/python/include")>> %loc%\core\cmake\FindPython.cmake
+echo set(Python_LIBRARY "%escaped_loc%/runtimes/python/libs/python39.lib")>> %loc%\core\cmake\FindPython.cmake
+echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindPython.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> %loc%\core\cmake\FindPython.cmake
+echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS)>> %loc%\core\cmake\FindPython.cmake
 
 mkdir core\build
 cd core\build
@@ -92,7 +101,6 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_TESTS=OFF ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
-	-DPython_ROOT_DIR="%loc%\runtimes\python" ^
 	-DOPTION_BUILD_LOADERS_NODE=OFF ^
 	-DOPTION_BUILD_LOADERS_CS=OFF ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
