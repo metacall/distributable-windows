@@ -1,4 +1,5 @@
-@echo off
+@echo on
+rem TODO: @echo off
 
 rem Use all the cores when building
 set CL=/MP
@@ -25,7 +26,6 @@ echo Downloading Dependencies
 mkdir %loc%\dependencies
 cd %loc%\dependencies
 
-rem powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.7-zip.org/a/7z2106-x64.msi', './7z-x64.msi')"
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')"
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
@@ -41,14 +41,8 @@ mkdir %loc%\runtimes\nodejs
 
 cd %loc%\dependencies
 
-rem Install 7zip for Ruby
-rem mkdir %loc%\dependencies\7zip
-rem msiexec /i ".\7z-x64.msi" TARGETDIR="%loc%\dependencies\7zip" /q
-
-rem Assumes 7zip is installed
-set PATH=%PATH%;%programfiles%\7-Zip\
-
 rem Install Ruby
+set PATH=%PATH%;%programfiles%\7-Zip\
 7z x %loc%\dependencies\ruby-mswin.7z
 robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
 rmdir %loc%\dependencies\ruby-mswin
