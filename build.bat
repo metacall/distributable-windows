@@ -7,15 +7,6 @@ mkdir metacall
 cd metacall
 set loc=%cd%
 
-mkdir %loc%\runtimes
-mkdir %loc%\runtimes\ruby
-mkdir %loc%\runtimes\python
-mkdir %loc%\runtimes\dotnet
-mkdir %loc%\runtimes\nodejs
-
-mkdir %loc%\dependencies
-cd %loc%\dependencies
-
 echo Checking Compiler and Build System
 
 where /Q cmake
@@ -33,8 +24,10 @@ echo Downloading Dependencies
 
 mkdir %loc%\dependencies
 cd %loc%\dependencies
+
+rem powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.7-zip.org/a/7z2106-x64.msi', './7z-x64.msi')"
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')"
-@REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')"
 @REM powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')"
 
@@ -48,19 +41,22 @@ mkdir %loc%\runtimes\nodejs
 
 cd %loc%\dependencies
 
-rem Install 7zip (PowerShell) for Ruby
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Install-PackageProvider" -Name NuGet -MinimumVersion 2.8.5.201 -Force; Set-PSRepository -Name 'PSGallery' -SourceLocation "https://www.powershellgallery.com/api/v2" -InstallationPolicy Trusted
-powershell -Command "Install-Module" -Name 7Zip4PowerShell -Force
+rem Install 7zip for Ruby
+rem mkdir %loc%\dependencies\7zip
+rem msiexec /i ".\7z-x64.msi" TARGETDIR="%loc%\dependencies\7zip" /q
+
+rem Assumes 7zip is installed
+set PATH=%PATH%;%programfiles%\7-Zip\
 
 rem Install Ruby
-powershell -Command "Expand-7Zip" -ArchiveFileName "ruby-mswin.7z" -DestinationPath "%loc%\runtimes\dotnet" -Remove
-robocopy /move /e %loc%\runtimes\ruby\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir %loc%\runtimes\ruby\ruby-mswin
+7z x %loc%\dependencies\ruby-mswin.7z
+robocopy /move /e %loc%\dependencies\ruby-mswin %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
+rmdir %loc%\dependencies\ruby-mswin
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
-@REM rem Install Python
-@REM python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
-@REM set PATH=%PATH%;%loc%\runtimes\python\bin
+rem Install Python
+python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
+set PATH=%PATH%;%loc%\runtimes\python\bin
 
 @REM rem Install DotNet
 @REM powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath %loc%\runtimes\dotnet
@@ -93,7 +89,7 @@ echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> %loc%\co
 mkdir core\build
 cd core\build
 
-rem TODO: NODE, CS, RB, TS
+rem TODO: NODE, CS, TS
 cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
@@ -116,6 +112,5 @@ rem Delete unnecesary data
 rmdir /S /Q %loc%\core
 rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
-rmdir /S /Q %loc%\w64devkit
 
 echo MetaCall Built Successfully
