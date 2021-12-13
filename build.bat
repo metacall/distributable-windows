@@ -71,7 +71,7 @@ set PATH=%PATH%;%loc%\runtimes\python\bin
 
 echo Building MetaCall
 
-cd ..
+cd %loc%
 
 git clone --depth 1 https://github.com/metacall/core.git
 
@@ -97,10 +97,10 @@ echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindPython.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> %loc%\core\cmake\FindPython.cmake
 echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARY Python_INCLUDE_DIRS)>> %loc%\core\cmake\FindPython.cmake
 
-mkdir core\build
-cd core\build
+mkdir %loc%\core\build
+cd %loc%\core\build
 
-rem TODO: NODE, CS, TS
+rem TODO: CS, NODE, TS
 cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
@@ -116,7 +116,6 @@ cmake -Wno-dev ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" ..
 cmake --build . --target install
-cd ..\..
 
 rem Delete unnecesary data
 rmdir /S /Q %loc%\core
@@ -124,3 +123,6 @@ rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
 
 echo MetaCall Built Successfully
+
+rem List all files (for debugging purposes)
+dir /b /s /a %loc%
