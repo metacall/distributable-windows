@@ -48,6 +48,14 @@ rmdir /S /Q %loc%\dependencies\ruby-mswin
 set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
+where /Q python
+if %ERRORLEVEL% EQU 0 (goto skip_uninstall_python)
+
+rem Uninstall Python if it is already installed
+python_installer.exe /uninstall
+
+:skip_uninstall_python
+
 python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1
 set PATH=%PATH%;%loc%\runtimes\python\bin
 
