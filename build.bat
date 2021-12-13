@@ -1,4 +1,4 @@
-@echo off
+@echo on
 
 rem Use all the cores when building
 set CL=/MP
