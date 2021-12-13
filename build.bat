@@ -96,6 +96,21 @@ echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindPython.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> %loc%\core\cmake\FindPython.cmake
 echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> %loc%\core\cmake\FindPython.cmake
 
+rem Patch for FindCoreCLR.cmake
+echo set(CoreCLR_VERSION 5.0.12)>> %loc%\core\cmake\FindCoreCLR.cmake
+echo set(DOTNET_CORE_PATH "%escaped_loc%/runtimes/dotnet/shared/Microsoft.NETCore.App/5.0.12")>> %loc%\core\cmake\FindCoreCLR.cmake
+echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindCoreCLR.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(CoreCLR REQUIRED_VARS DOTNET_CORE_PATH VERSION_VAR CoreCLR_VERSION)>> %loc%\core\cmake\FindCoreCLR.cmake
+echo mark_as_advanced(DOTNET_CORE_PATH)>> %loc%\core\cmake\FindCoreCLR.cmake
+
+rem Patch for FindDotNET.cmake
+echo set(DOTNET_VERSION 5.0.12)>> %loc%\core\cmake\FindDotNET.cmake
+echo set(DOTNET_MIGRATE 1)>> %loc%\core\cmake\FindDotNET.cmake
+echo set(DOTNET_COMMAND "%escaped_loc%/runtimes/dotnet/dotnet.exe")>> %loc%\core\cmake\FindDotNET.cmake
+echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindDotNET.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNET_MIGRATE VERSION_VAR DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
+echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
+
 mkdir %loc%\core\build
 cd %loc%\core\build
 
@@ -110,7 +125,6 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=OFF ^
 	-DOPTION_BUILD_LOADERS_CS=ON ^
-	-DDOTNET_CORE_PATH="%loc%\runtimes\dotnet\shared\Microsoft.NETCore.App\5.0.12\" ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
