@@ -133,6 +133,9 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_LOADERS_CS=ON ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=ON ^
+	-DOPTION_BUILD_PORTS=ON ^
+	-DOPTION_BUILD_PORTS_PY=ON ^
+	-DOPTION_BUILD_PORTS_NODE=ON ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" .. || goto :error
 cmake --build . --target install || goto :error
@@ -145,9 +148,11 @@ rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo MetaCall Built Successfully
 dir /b /s /a %loc%
-cd ../..
+
 echo Compressing the Tarball
+cd ../..
 powershell -Command "Compress-Archive" -Path %loc% -DestinationPath metacall.zip
+
 exit 0
 
 rem Handle error
