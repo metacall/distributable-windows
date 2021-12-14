@@ -87,9 +87,10 @@ rmdir /S /Q %loc%\dependencies\node-v14.18.2
 rem Build NodeJS (DLL)
 cmake -E tar xzf node_src.tar.gz || goto :error
 cd %loc%\dependencies\node-v14.18.2 || goto :error
-.\vcbuild.bat || goto :error
+call .\vcbuild.bat || goto :error
 python %loc%\dependencies\NodeJSGYPPatch.py %loc%\dependencies\node-v14.18.2\node.gyp || goto :error
-.\vcbuild.bat dll rem This command will fail but it will produce a valid node.dll
+rem Next command will fail but it will produce a valid node.dll
+call .\vcbuild.bat dll
 mkdir %loc%\runtimes\nodejs\lib || goto :error
 move %loc%\dependencies\node-v14.18.2\out\Release\libnode.lib %loc%\runtimes\nodejs\lib\libnode.lib || goto :error
 move %loc%\dependencies\node-v14.18.2\out\Release\libnode.dll %loc%\runtimes\nodejs\lib\libnode.dll || goto :error
