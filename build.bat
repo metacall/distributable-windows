@@ -72,7 +72,7 @@ set PATH=%PATH%;%loc%\runtimes\dotnet
 
 rem Install NodeJS
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
-robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP || goto :error
+robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
 rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
 set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
