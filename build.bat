@@ -145,6 +145,9 @@ rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo MetaCall Built Successfully
 dir /b /s /a %loc%
+cd ../..
+echo Compressing the Tarball
+powershell -Command "Compress-Archive" -Path %loc% -DestinationPath metacall.zip
 exit 0
 
 rem Handle error
