@@ -10,7 +10,7 @@ set loc=%cd%
 echo Checking Compiler and Build System
 
 where /Q cmake
-if %ERRORLEVEL% EQU 0 (goto skip_build_system)
+if %errorlevel% EQU 0 (goto skip_build_system)
 
 rem Install CMake if not found
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')" || goto :error
@@ -51,7 +51,7 @@ set PATH=%PATH%;%loc%\runtimes\ruby\bin
 
 rem Install Python
 where /Q python
-if %ERRORLEVEL% EQU 0 (goto skip_uninstall_python)
+if %errorlevel% EQU 0 (goto skip_uninstall_python)
 
 rem Uninstall Python if it is already installed
 python_installer.exe /uninstall || goto :error
@@ -139,7 +139,14 @@ echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindDotNET.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNET_MIGRATE VERSION_VAR DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
 echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
 
-rem TODO: Patch for FindNodeJS.cmake
+rem Patch for FindNodeJS.cmake
+echo set(NodeJS_VERSION 14.18.2)>> %loc%\core\cmake\FindNodeJS.cmake
+echo set(NodeJS_INCLUDE_DIRS "%escaped_loc%/runtimes/nodejs/include")>> %loc%\core\cmake\FindNodeJS.cmake
+echo set(NodeJS_LIBRARY "%escaped_loc%/runtimes/nodejs/lib/libnode.lib")>> %loc%\core\cmake\FindNodeJS.cmake
+echo set(NodeJS_EXECUTABLE "%escaped_loc%/runtimes/nodejs/node.exe")>> %loc%\core\cmake\FindNodeJS.cmake
+echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindNodeJS.cmake
+echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(NodeJS REQUIRED_VARS NodeJS_INCLUDE_DIRS NodeJS_LIBRARY NodeJS_EXECUTABLE VERSION_VAR NodeJS_VERSION)>> %loc%\core\cmake\FindNodeJS.cmake
+echo mark_as_advanced(NodeJS_VERSION NodeJS_INCLUDE_DIRS NodeJS_LIBRARY NodeJS_EXECUTABLE)>> %loc%\core\cmake\FindNodeJS.cmake
 
 mkdir %loc%\core\build
 cd %loc%\core\build
