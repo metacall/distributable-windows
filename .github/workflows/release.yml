@@ -12,4 +12,4 @@ jobs:
           arch: amd64
       - name: Build MetaCall Distributabe Windows
         shell: powershell
-        run: call .\build.bat
+        run: .\build.bat
