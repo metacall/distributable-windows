@@ -29,6 +29,9 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-headers.tar.gz', './node_headers.tar.gz')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2.tar.gz', './node_src.tar.gz')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/metacall/core/66fcaac300611d1c4210023e7b260296586a42e0/cmake/NodeJSGYPPatch.py', './NodeJSGYPPatch.py')" || goto :error
 
 echo Installing Runtimes
 
@@ -73,6 +76,26 @@ robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nod
 rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
 set PATH=%PATH%;%loc%\runtimes\nodejs\bin
 
+rem Install NodeJS Headers
+cmake -E tar xzf node_headers.tar.gz || goto :error
+cd %loc%\dependencies\node-v14.18.2 || goto :error
+mkdir %loc%\runtimes\nodejs\include
+robocopy /move /e %loc%\dependencies\node-v14.18.2\include %loc%\runtimes\nodejs\include /NFL /NDL /NJH /NJS /NC /NS /NP
+cd %loc%\dependencies
+rmdir /S /Q %loc%\dependencies\node-v14.18.2
+
+rem Build NodeJS (DLL)
+cmake -E tar xzf node_src.tar.gz || goto :error
+cd %loc%\dependencies\node-v14.18.2 || goto :error
+.\vcbuild.bat || goto :error
+python %loc%\dependencies\NodeJSGYPPatch.py %loc%\dependencies\node-v14.18.2\node.gyp || goto :error
+.\vcbuild.bat dll rem This command will fail but it will produce a valid node.dll
+mkdir %loc%\runtimes\nodejs\lib || goto :error
+move %loc%\dependencies\node-v14.18.2\out\Release\libnode.lib %loc%\runtimes\nodejs\lib\libnode.lib || goto :error
+move %loc%\dependencies\node-v14.18.2\out\Release\libnode.dll %loc%\runtimes\nodejs\lib\libnode.dll || goto :error
+cd %loc%\dependencies
+rmdir /S /Q %loc%\dependencies\node-v14.18.2
+
 echo Building MetaCall
 
 cd %loc%
@@ -116,6 +139,8 @@ echo set(DOTNET_COMMAND "%escaped_loc%/runtimes/dotnet/dotnet.exe")>> %loc%\core
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindDotNET.cmake
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNET_MIGRATE VERSION_VAR DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
 echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> %loc%\core\cmake\FindDotNET.cmake
+
+rem TODO: Patch for FindNodeJS.cmake
 
 mkdir %loc%\core\build
 cd %loc%\core\build
