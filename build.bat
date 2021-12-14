@@ -20,6 +20,12 @@ del cmake.zip
 
 :skip_build_system
 
+rem Install NASM for NodeJS
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/nasm-2.15.05-win64.zip', './nasm.zip')" || goto :error
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "nasm.zip" -DestinationPath . || goto :error
+set PATH=%PATH%;%loc%\nasm-2.15.05;%loc%\nasm-2.15.05\rdoff
+del nasm.zip
+
 echo Downloading Dependencies
 
 mkdir %loc%\dependencies
@@ -175,6 +181,7 @@ rem Delete unnecesary data
 rmdir /S /Q %loc%\core
 rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
+rmdir /S /Q %loc%\nasm-2.15.05
 rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo MetaCall Built Successfully
