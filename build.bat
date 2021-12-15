@@ -80,7 +80,7 @@ rem Install NodeJS
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath %loc%\runtimes\nodejs || goto :error
 robocopy /move /e %loc%\runtimes\nodejs\node-v14.18.2-win-x64 %loc%\runtimes\nodejs /NFL /NDL /NJH /NJS /NC /NS /NP
 rmdir %loc%\runtimes\nodejs\node-v14.18.2-win-x64
-set PATH=%PATH%;%loc%\runtimes\nodejs\bin
+set PATH=%PATH%;%loc%\runtimes\nodejs
 
 rem Install NodeJS Headers
 cmake -E tar xzf node_headers.tar.gz || goto :error
@@ -139,7 +139,7 @@ echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> %loc%\core
 
 rem Patch for FindNodeJS.cmake
 echo set(NodeJS_VERSION 14.18.2)> %loc%\core\cmake\FindNodeJS.cmake
-echo set(NodeJS_INCLUDE_DIRS "%escaped_loc%/runtimes/nodejs/include")>> %loc%\core\cmake\FindNodeJS.cmake
+echo set(NodeJS_INCLUDE_DIRS "%escaped_loc%/runtimes/nodejs/include/node")>> %loc%\core\cmake\FindNodeJS.cmake
 echo set(NodeJS_LIBRARY "%escaped_loc%/runtimes/nodejs/lib/libnode.lib")>> %loc%\core\cmake\FindNodeJS.cmake
 echo set(NodeJS_EXECUTABLE "%escaped_loc%/runtimes/nodejs/node.exe")>> %loc%\core\cmake\FindNodeJS.cmake
 echo include(FindPackageHandleStandardArgs)>> %loc%\core\cmake\FindNodeJS.cmake
@@ -159,6 +159,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
+	-DNPM_ROOT="%escaped_loc%/runtimes/nodejs" ^
 	-DOPTION_BUILD_LOADERS_CS=ON ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=ON ^
