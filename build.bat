@@ -36,7 +36,7 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-headers.tar.gz', './node_headers.tar.gz')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2.tar.gz', './node_src.tar.gz')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.1/node-shared-v14.18.2-x64.zip', './node_dll.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/metacall/core/66fcaac300611d1c4210023e7b260296586a42e0/cmake/NodeJSGYPPatch.py', './NodeJSGYPPatch.py')" || goto :error
 
 echo Installing Runtimes
@@ -90,16 +90,8 @@ robocopy /move /e %loc%\dependencies\node-v14.18.2\include %loc%\runtimes\nodejs
 cd %loc%\dependencies
 rmdir /S /Q %loc%\dependencies\node-v14.18.2
 
-rem Build NodeJS (DLL)
-cmake -E tar xzf node_src.tar.gz || goto :error
-cd %loc%\dependencies\node-v14.18.2 || goto :error
-python %loc%\dependencies\NodeJSGYPPatch.py %loc%\dependencies\node-v14.18.2\node.gyp || goto :error
-call .\vcbuild.bat dll
-mkdir %loc%\runtimes\nodejs\lib || goto :error
-move %loc%\dependencies\node-v14.18.2\out\Release\libnode.lib %loc%\runtimes\nodejs\lib\libnode.lib || goto :error
-move %loc%\dependencies\node-v14.18.2\out\Release\libnode.dll %loc%\runtimes\nodejs\lib\libnode.dll || goto :error
-cd %loc%\dependencies
-rmdir /S /Q %loc%\dependencies\node-v14.18.2
+rem Install NodeJS DLL
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node_dll.zip" -DestinationPath %loc%\runtimes\nodejs\lib || goto :error
 
 echo Building MetaCall
 
@@ -188,9 +180,11 @@ echo MetaCall Built Successfully
 dir /b /s /a %loc%
 
 echo Compressing the Tarball
-cd ../..
-powershell -Command "Compress-Archive" -Path %loc% -DestinationPath metacall.zip
+cd %loc%
+cd ..
+powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Compress-Archive" -Path %loc% -DestinationPath metacall-tarball-win-x64.zip || goto :error
 
+echo Tarball Compressed Successfully
 exit 0
 
 rem Handle error

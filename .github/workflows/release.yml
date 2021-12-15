@@ -13,3 +13,7 @@ jobs:
       - name: Build MetaCall Distributabe Windows
         shell: powershell
         run: .\build.bat
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: .\metacall-tarball-win-x64.zip
