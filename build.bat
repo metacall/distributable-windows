@@ -182,7 +182,9 @@ rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo Compressing the Tarball
 cd ..
-start /wait /min Powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$global:ProgressPreference = 'SilentlyContinue'; Copy-Item -Path '%loc%' -Force -PassThru | Get-ChildItem | Compress-Archive -DestinationPath metacall-tarball-win-x64.zip"
+set dest=%cd%
+start /wait /min Powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$global:ProgressPreference = 'SilentlyContinue'; Copy-Item -Path '%loc%' -Force -PassThru | Get-ChildItem | Compress-Archive -DestinationPath '%dest%\metacall-tarball-win-x64.zip'" || goto :error
+dir /b /a %dest%\metacall-tarball-win-x64.zip || goto :error
 
 echo Tarball Compressed Successfully
 exit 0
