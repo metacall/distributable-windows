@@ -3,9 +3,8 @@
 rem Use all the cores when building
 set CL=/MP
 
-mkdir metacall
-cd metacall
-set loc=%cd%
+rem Output directory
+set dest=%cd%
 
 echo Checking Compiler and Build System
 
@@ -15,10 +14,15 @@ if %errorlevel% EQU 0 (goto skip_build_system)
 rem Install CMake if not found
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/Kitware/CMake/releases/download/v3.22.1/cmake-3.22.1-windows-x86_64.zip', './cmake.zip')" || goto :error
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "cmake.zip" -DestinationPath . || goto :error
-set PATH=%PATH%;%loc%\cmake-3.22.1-windows-x86_64\bin
+set PATH=%PATH%;%dest%\cmake-3.22.1-windows-x86_64\bin
 del cmake.zip
 
 :skip_build_system
+
+rem Tarball directory
+mkdir metacall
+cd metacall
+set loc=%cd%
 
 rem Install NASM for NodeJS
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.nasm.us/pub/nasm/releasebuilds/2.15.05/win64/nasm-2.15.05-win64.zip', './nasm.zip')" || goto :error
@@ -172,19 +176,16 @@ cmake --build . --target install || goto :error
 
 echo MetaCall Built Successfully
 
-rem Delete unnecesary data
+rem Delete unnecesary data from tarball directory
 cd %loc%
 rmdir /S /Q %loc%\core
 rmdir /S /Q %loc%\dependencies
-rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
 rmdir /S /Q %loc%\nasm-2.15.05
 rmdir /S /Q %loc%\runtimes\dotnet\include
 
 echo Compressing the Tarball
-cd ..
-set dest=%cd%
-start /wait /min Powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "$global:ProgressPreference = 'SilentlyContinue'; Copy-Item -Path '%loc%' -Force -PassThru | Get-ChildItem | Compress-Archive -DestinationPath '%dest%\metacall-tarball-win-x64.zip'" || goto :error
-dir /b /a %dest%\metacall-tarball-win-x64.zip || goto :error
+cd %dest%
+cmake -E tar "cf" "%dest%\metacall-tarball-win-x64.zip" --format=zip "%loc%"
 
 echo Tarball Compressed Successfully
 exit 0
