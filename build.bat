@@ -170,18 +170,17 @@ cmake -Wno-dev ^
 	-G "NMake Makefiles" .. || goto :error
 cmake --build . --target install || goto :error
 
+echo MetaCall Built Successfully
+
 rem Delete unnecesary data
+cd %loc%
 rmdir /S /Q %loc%\core
 rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\cmake-3.22.1-windows-x86_64
 rmdir /S /Q %loc%\nasm-2.15.05
 rmdir /S /Q %loc%\runtimes\dotnet\include
 
-echo MetaCall Built Successfully
-dir /b /s /a %loc%
-
 echo Compressing the Tarball
-cd %loc%
 cd ..
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Compress-Archive" -Path %loc% -DestinationPath metacall-tarball-win-x64.zip || goto :error
 
