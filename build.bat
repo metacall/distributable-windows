@@ -158,8 +158,8 @@ cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
 	-DOPTION_FORK_SAFE=OFF ^
-	-DOPTION_BUILD_SCRIPTS=ON ^
-	-DOPTION_BUILD_TESTS=ON ^
+	-DOPTION_BUILD_SCRIPTS=OFF ^
+	-DOPTION_BUILD_TESTS=OFF ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
@@ -172,7 +172,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_PORTS_NODE=ON ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" .. || goto :error
-cmake --build . --target test install || goto :error
+cmake --build . --target install || goto :error
 
 echo MetaCall Built Successfully
 
