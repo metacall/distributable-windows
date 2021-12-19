@@ -2,7 +2,9 @@
 setlocal
 set loc=%~dp0metacall
 rem Windows PATH
-set "PATH=%loc%;%loc%\lib"
+set "PATH=%SystemRoot%;%SystemRoot%\System32;%SystemRoot%\System32\Wbem"
+rem MetaCall
+set "PATH=%PATH%;%loc%;%loc%\lib"
 rem Python
 set "PYTHONHOME=%loc%\runtimes\python"
 set "PATH=%PATH%;%loc%\runtimes\python"

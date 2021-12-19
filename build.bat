@@ -158,8 +158,8 @@ cmake -Wno-dev ^
 	-DCMAKE_BUILD_TYPE=Release ^
 	-DOPTION_BUILD_SECURITY=OFF ^
 	-DOPTION_FORK_SAFE=OFF ^
-	-DOPTION_BUILD_SCRIPTS=OFF ^
-	-DOPTION_BUILD_TESTS=OFF ^
+	-DOPTION_BUILD_SCRIPTS=ON ^
+	-DOPTION_BUILD_TESTS=ON ^
 	-DOPTION_BUILD_EXAMPLES=OFF ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
@@ -172,7 +172,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_PORTS_NODE=ON ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" .. || goto :error
-cmake --build . --target install || goto :error
+cmake --build . --target test install || goto :error
 
 echo MetaCall Built Successfully
 
@@ -183,9 +183,21 @@ rmdir /S /Q %loc%\dependencies
 rmdir /S /Q %loc%\nasm-2.15.05
 rmdir /S /Q %loc%\runtimes\dotnet\include
 
+rem Delete runtime executables
+del /F /Q %loc%\runtimes\dotnet\dotnet.exe
+del /F /Q %loc%\runtimes\nodejs\node.exe
+del /F /Q %loc%\runtimes\ruby\bin\ruby.exe
+del /F /Q %loc%\runtimes\ruby\bin\rubyw.exe
+del /F /Q %loc%\runtimes\python\python.exe
+del /F /Q %loc%\runtimes\python\pythonw.exe
+
+rem Move library dependencies to the correct folders
+move /Y %loc%\runtimes\nodejs\lib\libnode.dll %loc%\lib
+move /Y %loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll %loc%\lib
+
 echo Compressing the Tarball
 cd %dest%
-cmake -E tar "cf" "%dest%\metacall-tarball-win-x64.zip" --format=zip "%loc%"
+cmake -E tar "cf" "%dest%\metacall-tarball-win-x64.zip" --format=zip "%loc%" "%dest%\metacall.bat"
 
 echo Tarball Compressed Successfully
 exit 0
