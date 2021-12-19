@@ -27,5 +27,5 @@ set "CONFIGURATION_PATH=%loc%\configurations\global.json"
 if not defined LOADER_SCRIPT_PATH (
 	set "LOADER_SCRIPT_PATH=%cd%"
 )
-%loc%\metacallcli.exe
+%loc%\metacallcli.exe %*
 endlocal
