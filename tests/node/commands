@@ -1,0 +1,4 @@
+load node test.js
+call python()
+call mock()
+exit
