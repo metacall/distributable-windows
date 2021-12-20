@@ -8,9 +8,10 @@ echo NodeJS test
 set "LOADER_SCRIPT_PATH=%loc%\node"
 type "%loc%\node\commands" | metacall | findstr "366667" || goto :test_fail
 
-echo Python test
-set "LOADER_SCRIPT_PATH=%loc%\python"
-type "%loc%\python\commands" | metacall | findstr "Hello World" || goto :test_fail
+rem TODO: Python port not installed yet
+rem echo Python test
+rem set "LOADER_SCRIPT_PATH=%loc%\python"
+rem type "%loc%\python\commands" | metacall | findstr "Hello World" || goto :test_fail
 
 exit /b 0
 
