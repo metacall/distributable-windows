@@ -1,3 +1,4 @@
+name: "MetaCall Distributabe Windows"
 on:
   push:
     tags:
@@ -10,9 +11,12 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-      - name: Build MetaCall Distributabe Windows
+      - name: Build
         shell: powershell
         run: .\build.bat
+      - name: Test
+        shell: powershell
+        run: .\test.bat
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
