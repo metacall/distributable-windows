@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set loc=%~dp0metacall
+set "loc=%~dp0metacall"
 rem Windows PATH
 set "PATH=%SystemRoot%;%SystemRoot%\System32;%SystemRoot%\System32\Wbem"
 rem MetaCall
@@ -27,5 +27,5 @@ set "CONFIGURATION_PATH=%loc%\configurations\global.json"
 if not defined LOADER_SCRIPT_PATH (
 	set "LOADER_SCRIPT_PATH=%cd%"
 )
-%loc%\metacallcli.exe %*
+"%loc%\metacallcli.exe %*"
 endlocal
