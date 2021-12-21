@@ -17,10 +17,11 @@ rem DotNet Core
 set "PATH=%PATH%;%loc%\lib\runtimes\dotnet;%loc%\lib\runtimes\dotnet\host\fxr\5.0.12"
 
 rem Check if it is running a package manager (or related binary) and execute it
+for /f "tokens=1,* delims= " %%a in ("%*") do set SUBPROGRAM_PARAMETERS=%%b
 if not [%1]==[] (
 	where /q "%1"
 	if %errorlevel% EQU 0 (
-		"%1" %*
+		"%1" %SUBPROGRAM_PARAMETERS%
 		exit /b %errorlevel%
 	)
 )
