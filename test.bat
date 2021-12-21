@@ -10,7 +10,7 @@ type "%loc%\node\commands.txt" | metacall.bat | findstr "366667" || goto :test_f
 
 echo Python test
 set "LOADER_SCRIPT_PATH=%loc%\python"
-metacall.bat pip3 install metacall
+metacall.bat pip3 install metacall || goto :test_fail
 type "%loc%\python\commands.txt" | metacall.bat | findstr "Hello World" || goto :test_fail
 
 exit /b 0

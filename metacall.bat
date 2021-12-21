@@ -20,7 +20,7 @@ rem Check if it is running a package manager (or related binary) and execute it
 if not [%1]==[] (
 	where /q "%1"
 	if %errorlevel% EQU 0 (
-		"%1"
+		"%1" %*
 		exit /b %errorlevel%
 	)
 )
