@@ -62,13 +62,11 @@ set "PATH=%PATH%;%loc%\runtimes\ruby\bin"
 rem Install Python
 where /Q python
 if %errorlevel% EQU 0 (goto skip_uninstall_python)
-mkdir "%loc%\runtimes\python\Pip"
 rem Uninstall Python if it is already installed
 python_installer.exe /uninstall || goto :error
-
 :skip_uninstall_python
-
 python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1 || goto :error
+mkdir "%loc%\runtimes\python\Pip" || goto :error
 set "PATH=%PATH%;%loc%\runtimes\python"
 
 rem Install DotNet
