@@ -7,6 +7,7 @@ rem MetaCall
 set "PATH=%PATH%;%loc%;%loc%\lib"
 rem Python
 set "PYTHONHOME=%loc%\runtimes\python"
+set "PIP_TARGET=%loc%\runtimes\python\Pip"
 set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts"
 rem NodeJS
 set "PATH=%PATH%;%loc%\lib\runtimes\nodejs;%loc%\lib\runtimes\nodejs\lib"
