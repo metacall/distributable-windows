@@ -8,11 +8,10 @@ echo NodeJS test
 set "LOADER_SCRIPT_PATH=%loc%\node"
 type "%loc%\node\commands.txt" | metacall.bat | findstr "366667" || goto :test_fail
 
-rem TODO: This has not been tested yet
-rem echo Python test
-rem set "LOADER_SCRIPT_PATH=%loc%\python"
-rem metacall pip3 install metacall
-rem type "%loc%\python\commands.txt" | metacall.bat | findstr "Hello World" || goto :test_fail
+echo Python test
+set "LOADER_SCRIPT_PATH=%loc%\python"
+metacall pip3 install metacall
+type "%loc%\python\commands.txt" | metacall.bat | findstr "Hello World" || goto :test_fail
 
 exit /b 0
 
