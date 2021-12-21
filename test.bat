@@ -1,6 +1,6 @@
 @echo off
 
-rem The format of commands (i.e tests/node/commands) must always contain a new line at the end
+rem The format of commands (i.e tests/node/commands.txt) must always contain a new line at the end
 
 set "loc=%~dp0tests"
 
@@ -10,7 +10,7 @@ type "%loc%\node\commands.txt" | metacall.bat | findstr "366667" || goto :test_f
 
 echo Python test
 set "LOADER_SCRIPT_PATH=%loc%\python"
-metacall pip3 install metacall
+metacall.bat pip3 install metacall
 type "%loc%\python\commands.txt" | metacall.bat | findstr "Hello World" || goto :test_fail
 
 exit /b 0
