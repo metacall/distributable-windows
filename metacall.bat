@@ -16,15 +16,33 @@ set "PATH=%PATH%;%loc%\lib\runtimes\ruby\bin;%loc%\lib\runtimes\ruby\bin\ruby_bu
 rem DotNet Core
 set "PATH=%PATH%;%loc%\lib\runtimes\dotnet;%loc%\lib\runtimes\dotnet\host\fxr\5.0.12"
 
+rem Package Managers Paths
+set "pip_path=%loc%\runtimes\python\Pip\bin\pip.exe"
+set "pip3_path=%loc%\runtimes\python\Pip\bin\pip3.exe"
+set "npm_path=%loc%\runtimes\nodejs\npm.cmd"
+set "npx_path=%loc%\runtimes\nodejs\npx.cmd"
+set "bundle_path=%loc%\runtimes\ruby\bundle.bat"
+set "bundler_path=%loc%\runtimes\ruby\bundler.bat"
+set "erb_path=%loc%\runtimes\ruby\erb.bat"
+set "gem_path=%loc%\runtimes\ruby\gem.bat"
+set "irb_path=%loc%\runtimes\ruby\irb.bat"
+set "racc_path=%loc%\runtimes\ruby\racc.bat"
+set "rake_path=%loc%\runtimes\ruby\rake.bat"
+set "rbs_path=%loc%\runtimes\ruby\rbs.bat"
+set "rdbg_path=%loc%\runtimes\ruby\rdbg.bat"
+set "rdoc_path=%loc%\runtimes\ruby\rdoc.bat"
+set "ri_path=%loc%\runtimes\ruby\ri.bat"
+set "typeprof_path=%loc%\runtimes\ruby\typeprof.bat"
+rem TODO: set "nuget_path=%loc%\runtimes\dotnet\nuget.exe"
+
 rem Check if it is running a package manager (or related binary) and execute it
 for /f "tokens=1,* delims= " %%a in ("%*") do set SUBPROGRAM_PARAMETERS=%%b
-if not [%1]==[] (
-	where /q "%1"
-	if %errorlevel% EQU 0 (
-		"%1" %SUBPROGRAM_PARAMETERS%
-		exit /b %errorlevel%
-	)
+setlocal ENABLEDELAYEDEXPANSION
+set package_manager=^^^!%1_path^^^!
+if not [%package_manager%]==[] (
+	"%package_manager%" %SUBPROGRAM_PARAMETERS%
 )
+endlocal
 
 rem MetaCall Enviroment
 set "CORE_ROOT=%loc%\runtimes\dotnet\shared\Microsoft.NETCore.App\5.0.12"
