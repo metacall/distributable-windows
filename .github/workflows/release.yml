@@ -1,4 +1,4 @@
-name: "MetaCall Distributabe Windows"
+name: "MetaCall Distributable Windows"
 on:
   push:
     tags:
