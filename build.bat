@@ -104,11 +104,11 @@ git clone --depth 1 https://github.com/metacall/core.git || goto :error
 set "escaped_loc=%loc:\=/%"
 
 rem Patch for FindRuby.cmake
-echo set(Ruby_VERSION 3.1.0)> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_VERSION 3.2.0)> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.1.0;%escaped_loc%/runtimes/ruby/include/ruby-3.1.0/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.2.0+2;%escaped_loc%/runtimes/ruby/include/ruby-3.2.0+2/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby320.lib")>> "%loc%\core\cmake\FindRuby.cmake"
 echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindRuby.cmake"
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> "%loc%\core\cmake\FindRuby.cmake"
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> "%loc%\core\cmake\FindRuby.cmake"
