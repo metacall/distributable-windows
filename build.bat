@@ -35,7 +35,7 @@ echo Downloading Dependencies
 mkdir "%loc%\dependencies"
 cd "%loc%\dependencies"
 
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-mswin/releases/download/ruby-mswin-builds/Ruby-3.1.2-ms.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/d1ca6dbf-d054-46ba-86d1-36eb2e455ba2/e950d4503116142d9c2129ed65084a15/dotnet-sdk-5.0.403-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
@@ -56,7 +56,7 @@ cd "%loc%\dependencies"
 rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
 7z x "%loc%\dependencies\ruby-mswin.7z" || goto :error
-robocopy /move /e "%loc%\dependencies\ruby-mswin" %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
+robocopy /move /e "%loc%\dependencies\Ruby31-ms" %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
 set "PATH=%PATH%;%loc%\runtimes\ruby\bin"
 
 rem Install Python
@@ -104,11 +104,11 @@ git clone --depth 1 https://github.com/metacall/core.git || goto :error
 set "escaped_loc=%loc:\=/%"
 
 rem Patch for FindRuby.cmake
-echo set(Ruby_VERSION 3.2.0)> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_VERSION 3.1.0)> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.2.0+2;%escaped_loc%/runtimes/ruby/include/ruby-3.2.0+2/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby320.lib")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.1.0;%escaped_loc%/runtimes/ruby/include/ruby-3.1.0/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")>> "%loc%\core\cmake\FindRuby.cmake"
 echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindRuby.cmake"
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> "%loc%\core\cmake\FindRuby.cmake"
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> "%loc%\core\cmake\FindRuby.cmake"
