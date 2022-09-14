@@ -1,4 +1,4 @@
-name: "MetaCall Distributable Windows"
+name: "MetaCall Distributable Windows Release"
 
 on:
   push:
