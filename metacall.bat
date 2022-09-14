@@ -41,6 +41,7 @@ setlocal ENABLEDELAYEDEXPANSION
 set package_manager=^^^!%1_path^^^!
 if not [%package_manager%]==[] (
 	"%package_manager%" %SUBPROGRAM_PARAMETERS%
+        exit %errorlevel%
 )
 endlocal
 
