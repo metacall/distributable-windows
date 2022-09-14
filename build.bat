@@ -187,7 +187,7 @@ echo { }> "%loc%\configurations\cs_loader.json"
 
 rem Move library dependencies to the correct folders
 move /Y "%loc%\runtimes\nodejs\lib\libnode.dll" "%loc%\lib"
-move /Y "%loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll" "%loc%\lib"
+copy /Y "%loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll" "%loc%\lib"
 
 echo Compressing the Tarball
 cd %dest%
