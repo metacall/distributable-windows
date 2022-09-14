@@ -1,8 +1,10 @@
 name: "MetaCall Distributable Windows"
+
 on:
   push:
     tags:
       - 'v*.*.*'
+
 jobs:
   build:
     runs-on: windows-2019
