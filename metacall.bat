@@ -1,4 +1,4 @@
-rem @echo off
+@echo off
 setlocal
 set "loc=%~dp0metacall"
 rem Windows PATH
@@ -41,7 +41,7 @@ setlocal ENABLEDELAYEDEXPANSION
 set package_manager=^^^!%1_path^^^!
 if not [%package_manager%]==[] (
 	call "%package_manager%" %SUBPROGRAM_PARAMETERS%
-        exit \b %errorlevel%
+	exit \b %errorlevel%
 )
 endlocal
 
