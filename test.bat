@@ -12,18 +12,32 @@ type out.txt
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 echo Node metacall test
-type "%loc%\node\commands.txt" | metacall.bat | findstr "366667" || goto :test_fail
+type "%loc%\node\commands.txt" | metacall.bat ^> out.txt
+if %errorlevel%==1 goto :test_fail
+type out.txt | findstr "366667" || goto :test_fail 
+type out.txt
 echo Successfull!!
 
 echo Python tests
 set "LOADER_SCRIPT_PATH=%loc%\python"
+@ 
+setlocal
+set "PYTHONHOME=%~dp0metacall\runtimes\python"
+set "PIP_TARGET=%~dp0metacall\runtimes\python\Pip"
+set "PATH=%~dp0metacall\runtimes\python;%~dp0metacall\runtimes\python\Scripts"
+%~dp0metacall\runtimes\python\python.exe -m pip install --upgrade --force-reinstall pip
+endlocal
+@
 echo Pip Test
 start /wait metacall.bat pip install metacall ^> out.txt
 type out.txt
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 echo Python metacall test
-type "%loc%\python\commands.txt" | call metacall.bat | findstr "Hello World" || goto :test_fail
+type "%loc%\python\commands.txt" | metacall.bat ^> out.txt 
+if %errorlevel%==1 goto :test_fail
+type out.txt | findstr "Hello World" || goto :test_fail
+type out.txt
 echo Successfull!!
 
 echo Ruby tests
@@ -94,5 +108,6 @@ exit /b 0
 
 :test_fail
 echo Test suite failed
+type out.txt
 DEL out.txt
 exit /b 1
