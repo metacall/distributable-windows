@@ -22,4 +22,5 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: .\metacall-tarball-win-x64.zip
+          files: metacall-tarball-win-x64.zip
+          fail_on_unmatched_files: true
