@@ -1,12 +1,13 @@
-name: "MetaCall Distributable Windows Test"
+name: MetaCall Distributable Windows Test
 
 on:
   workflow_dispatch:
   pull_request:
+  push:
 
 jobs:
   test:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
       - uses: ilammy/msvc-dev-cmd@v1
