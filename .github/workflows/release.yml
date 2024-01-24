@@ -13,9 +13,6 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-      - name: Delete Python
-        shell: powershell
-        run: Remove-Item -Recurse -Force -Path "C:/hostedtoolcache/windows/Python"
       - name: Build
         shell: powershell
         run: .\build.bat
