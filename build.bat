@@ -114,11 +114,11 @@ echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_L
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> "%loc%\core\cmake\FindRuby.cmake"
 
 rem Patch for FindPython.cmake
-echo set(Python_VERSION 3.9.7)> "%loc%\core\cmake\FindPython.cmake"
-echo set(Python_ROOT_DIR "%escaped_loc%/runtimes/python")>> "%loc%\core\cmake\FindPython.cmake"
-echo set(Python_EXECUTABLE "%escaped_loc%/runtimes/python/python.exe")>> "%loc%\core\cmake\FindPython.cmake"
-echo set(Python_INCLUDE_DIRS "%escaped_loc%/runtimes/python/include")>> "%loc%\core\cmake\FindPython.cmake"
-echo set(Python_LIBRARIES "%escaped_loc%/runtimes/python/libs/python39.lib")>> "%loc%\core\cmake\FindPython.cmake"
+echo set(Python3_VERSION 3.9.7)> "%loc%\core\cmake\FindPython.cmake"
+echo set(Python3_ROOT_DIR "%escaped_loc%/runtimes/python")>> "%loc%\core\cmake\FindPython.cmake"
+echo set(Python3_EXECUTABLE "%escaped_loc%/runtimes/python/python.exe")>> "%loc%\core\cmake\FindPython.cmake"
+echo set(Python3_INCLUDE_DIRS "%escaped_loc%/runtimes/python/include")>> "%loc%\core\cmake\FindPython.cmake"
+echo set(Python3_LIBRARIES "%escaped_loc%/runtimes/python/libs/python39.lib")>> "%loc%\core\cmake\FindPython.cmake"
 echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindPython.cmake"
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> "%loc%\core\cmake\FindPython.cmake"
 echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> "%loc%\core\cmake\FindPython.cmake"
