@@ -13,6 +13,8 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
+      - name: Delete Python
+        run: rd /s /q "C:\hostedtoolcache\windows\Python"
       - name: Build
         shell: powershell
         run: .\build.bat
