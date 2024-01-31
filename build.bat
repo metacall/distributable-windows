@@ -38,9 +38,9 @@ cd "%loc%\dependencies"
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-mswin/releases/download/ruby-mswin-builds/Ruby-3.1.2-ms.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-win-x64.zip', './node.zip')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v14.18.2/node-v14.18.2-headers.tar.gz', './node_headers.tar.gz')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.1/node-shared-v14.18.2-x64.zip', './node_dll.zip')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-win-x64.zip', './node.zip')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-headers.tar.gz', './node_headers.tar.gz')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.3/node-shared-v20.11.0-x64.zip', './node_dll.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/metacall/core/66fcaac300611d1c4210023e7b260296586a42e0/cmake/NodeJSGYPPatch.py', './NodeJSGYPPatch.py')" || goto :error
 
 echo Installing Runtimes
@@ -80,17 +80,17 @@ set "PATH=%PATH%;%loc%\runtimes\dotnet"
 
 rem Install NodeJS
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath "%loc%\runtimes\nodejs" || goto :error
-robocopy /move /e "%loc%\runtimes\nodejs\node-v14.18.2-win-x64" "%loc%\runtimes\nodejs" /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir "%loc%\runtimes\nodejs\node-v14.18.2-win-x64"
+robocopy /move /e "%loc%\runtimes\nodejs\node-v20.11.0-win-x64" "%loc%\runtimes\nodejs" /NFL /NDL /NJH /NJS /NC /NS /NP
+rmdir "%loc%\runtimes\nodejs\node-v20.11.0-win-x64"
 set "PATH=%PATH%;%loc%\runtimes\nodejs"
 
 rem Install NodeJS Headers
 cmake -E tar xzf node_headers.tar.gz || goto :error
-cd "%loc%\dependencies\node-v14.18.2" || goto :error
+cd "%loc%\dependencies\node-v20.11.0" || goto :error
 mkdir %loc%\runtimes\nodejs\include
-robocopy /move /e "%loc%\dependencies\node-v14.18.2\include" "%loc%\runtimes\nodejs\include" /NFL /NDL /NJH /NJS /NC /NS /NP
+robocopy /move /e "%loc%\dependencies\node-v20.11.0\include" "%loc%\runtimes\nodejs\include" /NFL /NDL /NJH /NJS /NC /NS /NP
 cd %loc%\dependencies
-rmdir /S /Q "%loc%\dependencies\node-v14.18.2"
+rmdir /S /Q "%loc%\dependencies\node-v20.11.0"
 
 rem Install NodeJS DLL
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node_dll.zip" -DestinationPath "%loc%\runtimes\nodejs\lib" || goto :error
@@ -140,7 +140,7 @@ echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNE
 echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> "%loc%\core\cmake\FindDotNET.cmake"
 
 rem Patch for FindNodeJS.cmake
-echo set(NodeJS_VERSION 14.18.2)> "%loc%\core\cmake\FindNodeJS.cmake"
+echo set(NodeJS_VERSION 20.11.0)> "%loc%\core\cmake\FindNodeJS.cmake"
 echo set(NodeJS_INCLUDE_DIRS "%escaped_loc%/runtimes/nodejs/include/node")>> "%loc%\core\cmake\FindNodeJS.cmake"
 echo set(NodeJS_LIBRARY "%escaped_loc%/runtimes/nodejs/lib/libnode.lib")>> "%loc%\core\cmake\FindNodeJS.cmake"
 echo set(NodeJS_EXECUTABLE "%escaped_loc%/runtimes/nodejs/node.exe")>> "%loc%\core\cmake\FindNodeJS.cmake"
