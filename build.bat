@@ -40,7 +40,7 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-win-x64.zip', './node.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-headers.tar.gz', './node_headers.tar.gz')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.3/node-shared-v20.11.0-x64.zip', './node_dll.zip')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.6/node-shared-v20.11.0-x64.zip', './node_dll.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://raw.githubusercontent.com/metacall/core/66fcaac300611d1c4210023e7b260296586a42e0/cmake/NodeJSGYPPatch.py', './NodeJSGYPPatch.py')" || goto :error
 
 echo Installing Runtimes
