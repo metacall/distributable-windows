@@ -1,10 +1,12 @@
 name: "MetaCall Distributable Windows Release"
 
 on:
+  repository_dispatch:
+    types: [test-trigger]
+  pull_request:
   push:
     tags:
       - 'v*.*.*'
-
 jobs:
   build:
     runs-on: windows-2019
