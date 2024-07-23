@@ -1,9 +1,14 @@
 name: "MetaCall Distributable Windows Release"
 
 on:
+  repository_dispatch:
+    types: [test-trigger]
+  pull_request:
   push:
     tags:
       - 'v*.*.*'
+    branches:
+      - master
 
 jobs:
   build:
@@ -13,13 +18,17 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
+
       - name: Build
         shell: powershell
         run: .\build.bat
+
       - name: Test
         shell: powershell
         run: .\test.bat
+
       - name: Release
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1
         with:
           files: metacall-tarball-win-x64.zip
