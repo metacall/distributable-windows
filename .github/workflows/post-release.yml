@@ -5,7 +5,8 @@ on:
     workflows: ["MetaCall Distributable Windows Release"]
     types:
       - completed
-  
+    branches: ['v*.*.*']
+
 jobs:
     test:
       runs-on: ubuntu-latest
