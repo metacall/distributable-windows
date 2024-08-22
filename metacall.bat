@@ -35,6 +35,10 @@ set "ri_path=%loc%\runtimes\ruby\bin\ri.bat"
 set "typeprof_path=%loc%\runtimes\ruby\bin\typeprof.bat"
 rem TODO: set "nuget_path=%loc%\runtimes\dotnet\nuget.exe"
 
+rem Additional Packages Paths
+set "deploy_path=%~dp0\deps\deploy\metacall-deploy.cmd"
+set "faas_path=%~dp0\deps\faas\metacall-faas.cmd"
+
 rem Check if it is running a package manager (or related binary) and execute it
 for /f "tokens=1,* delims= " %%a in ("%*") do set SUBPROGRAM_PARAMETERS=%%b
 setlocal ENABLEDELAYEDEXPANSION
