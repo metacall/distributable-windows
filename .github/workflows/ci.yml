@@ -32,3 +32,14 @@ jobs:
         with:
           files: metacall-tarball-win-x64.zip
           fail_on_unmatched_files: true
+
+      - name: Trigger Install Test Workflow
+        uses: convictional/trigger-workflow-and-wait@v1.6.1
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          owner: metacall
+          repo: install
+          github_token: ${{ secrets.G_PERSONAL_ACCESS_TOKEN }}
+          workflow_file_name: test-windows.yml
+          wait_workflow: true
+          ref: master
