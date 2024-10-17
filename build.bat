@@ -170,6 +170,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_PORTS=ON ^
 	-DOPTION_BUILD_PORTS_PY=ON ^
 	-DOPTION_BUILD_PORTS_NODE=ON ^
+	-DOPTION_BUILD_PORTS_RB=OFF ^
 	-DCMAKE_INSTALL_PREFIX="%loc%" ^
 	-G "NMake Makefiles" .. || goto :error
 cmake --build . --target install || goto :error
