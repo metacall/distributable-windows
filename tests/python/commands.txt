@@ -1,3 +1,4 @@
 load py test.py
 call test()
+load py port-test.py
 exit

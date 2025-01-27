@@ -40,4 +40,8 @@ module.exports = {
 		console.log(metacall('sum', 111111, 222222, 33334));
 		console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
 	},
+	testPort: function() {
+        console.log("Node.js port works");
+        return "Node.js port works";
+    }
 };
