@@ -7,7 +7,7 @@ set "loc=%~dp0tests"
 echo NodeJS tests
 set "LOADER_SCRIPT_PATH=%loc%\node"
 echo Npm Test
-start /wait metacall.bat npm install metacall ^> out.txt
+start /wait metacall.bat npm install is-number ^> out.txt
 type out.txt
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
