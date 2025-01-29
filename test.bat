@@ -29,7 +29,7 @@ set "PATH=%~dp0metacall\runtimes\python;%~dp0metacall\runtimes\python\Scripts"
 endlocal
 @
 echo Pip Test
-start /wait metacall.bat pip install metacall ^> out.txt
+start /wait metacall.bat pip install PyYAML ^> out.txt
 type out.txt
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
