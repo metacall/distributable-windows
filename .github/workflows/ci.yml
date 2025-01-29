@@ -33,9 +33,12 @@ jobs:
           files: metacall-tarball-win-x64.zip
           fail_on_unmatched_files: true
 
+  trigger:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
       - name: Trigger Install Test Workflow
         uses: convictional/trigger-workflow-and-wait@v1.6.1
-        if: startsWith(github.ref, 'refs/tags/v')
         with:
           owner: metacall
           repo: install
