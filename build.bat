@@ -177,6 +177,13 @@ cmake --build . --target install || goto :error
 
 echo MetaCall Built Successfully
 
+rem Patch for fixing install phase of py_port (https://gitlab.kitware.com/cmake/cmake/-/issues/25835#note_1502642)
+set "PYTHONHOME=%loc%\runtimes\python"
+set "PIP_TARGET=%loc%\runtimes\python\Lib\site-packages"
+set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts;%loc%\runtimes\python\Lib\site-packages\bin"
+
+"%loc%\runtimes\python\Scripts\pip3.exe" install "%loc%\core\source\ports\py_port"
+
 rem Delete unnecesary data from tarball directory
 cd %loc%
 rmdir /S /Q "%loc%\core"
