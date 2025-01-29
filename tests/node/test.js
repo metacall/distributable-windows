@@ -24,13 +24,17 @@
 const path = require('path');
 const { metacall, metacall_load_from_file, metacall_inspect } = require('metacall');
 
-/* TODO: Monkey-patch */
+// Test Monkey Patch
+const { three_str } = require('test.mock');
+
+// Test NPM
+require('is-number');
 
 module.exports = {
 	mock: function() {
 		/* Mock */
-		console.log(metacall_load_from_file('mock', [ 'test.mock' ]));
-		console.log(metacall('three_str', 'a', 'b', 'c'));
+		console.log(three_str);
+		console.log(three_str('a', 'b', 'c'));
 	},
 	python: function() {
 		/* Python */
