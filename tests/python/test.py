@@ -21,6 +21,11 @@
 
 from metacall import metacall, metacall_load_from_file
 
+# TODO: Test monkey patch
+
+# Test Pip
+import yaml
+
 metacall_load_from_file('mock', ['test.mock']);
 
 def test():
