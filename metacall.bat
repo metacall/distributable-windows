@@ -7,8 +7,8 @@ rem MetaCall
 set "PATH=%PATH%;%loc%;%loc%\lib"
 rem Python
 set "PYTHONHOME=%loc%\runtimes\python"
-set "PIP_TARGET=%loc%\runtimes\python\Pip"
-set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts"
+set "PIP_TARGET=%loc%\runtimes\python\Lib\site-packages"
+set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts;%loc%\runtimes\python\Lib\site-packages\bin"
 rem NodeJS
 set "PATH=%PATH%;%loc%\lib\runtimes\nodejs;%loc%\lib\runtimes\nodejs\lib"
 rem Ruby
@@ -17,8 +17,8 @@ rem DotNet Core
 set "PATH=%PATH%;%loc%\lib\runtimes\dotnet;%loc%\lib\runtimes\dotnet\host\fxr\5.0.12"
 
 rem Package Managers Paths
-set "pip_path=%loc%\runtimes\python\Pip\bin\pip.exe"
-set "pip3_path=%loc%\runtimes\python\Pip\bin\pip3.exe"
+set "pip_path=%loc%\runtimes\python\Scripts\pip.exe"
+set "pip3_path=%loc%\runtimes\python\Scripts\pip3.exe"
 set "npm_path=%loc%\runtimes\nodejs\npm.cmd"
 set "npx_path=%loc%\runtimes\nodejs\npx.cmd"
 set "bundle_path=%loc%\runtimes\ruby\bin\bundle.bat"

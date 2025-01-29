@@ -23,9 +23,8 @@ set "LOADER_SCRIPT_PATH=%loc%\python"
 @ 
 setlocal
 set "PYTHONHOME=%~dp0metacall\runtimes\python"
-set "PIP_TARGET=%~dp0metacall\runtimes\python\Pip"
-set "PATH=%~dp0metacall\runtimes\python;%~dp0metacall\runtimes\python\Scripts"
-%~dp0metacall\runtimes\python\python.exe -m pip install --upgrade --force-reinstall pip
+set "PIP_TARGET=%~dp0metacall\runtimes\python\Lib\site-packages"
+set "PATH=%~dp0metacall\runtimes\python;%~dp0metacall\runtimes\python\Scripts;%~dp0metacall\runtimes\python\Lib\site-packages\bin"
 endlocal
 @
 echo Pip Test
