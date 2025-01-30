@@ -17,22 +17,22 @@ rem DotNet Core
 set "PATH=%PATH%;%loc%\lib\runtimes\dotnet;%loc%\lib\runtimes\dotnet\host\fxr\5.0.12"
 
 rem Package Managers Paths
-set "pip_path=%loc%\runtimes\python\Scripts\pip.exe"
-set "pip3_path=%loc%\runtimes\python\Scripts\pip3.exe"
-set "npm_path=%loc%\runtimes\nodejs\npm.cmd"
-set "npx_path=%loc%\runtimes\nodejs\npx.cmd"
-set "bundle_path=%loc%\runtimes\ruby\bin\bundle.bat"
-set "bundler_path=%loc%\runtimes\ruby\bin\bundler.bat"
-set "erb_path=%loc%\runtimes\ruby\bin\erb.bat"
-set "gem_path=%loc%\runtimes\ruby\bin\gem.cmd"
-set "irb_path=%loc%\runtimes\ruby\bin\irb.bat"
-set "racc_path=%loc%\runtimes\ruby\bin\racc.bat"
-set "rake_path=%loc%\runtimes\ruby\bin\rake.bat"
-set "rbs_path=%loc%\runtimes\ruby\bin\rbs.bat"
-set "rdbg_path=%loc%\runtimes\ruby\bin\rdbg.bat"
-set "rdoc_path=%loc%\runtimes\ruby\bin\rdoc.bat"
-set "ri_path=%loc%\runtimes\ruby\bin\ri.bat"
-set "typeprof_path=%loc%\runtimes\ruby\bin\typeprof.bat"
+set pip_path="%loc%\runtimes\python\python.exe" -m pip
+set pip3_path="%loc%\runtimes\python\python.exe" -m pip
+set npm_path="%loc%\runtimes\nodejs\npm.cmd"
+set npx_path="%loc%\runtimes\nodejs\npx.cmd"
+set bundle_path="%loc%\runtimes\ruby\bin\bundle.bat"
+set bundler_path="%loc%\runtimes\ruby\bin\bundler.bat"
+set erb_path="%loc%\runtimes\ruby\bin\erb.bat"
+set gem_path="%loc%\runtimes\ruby\bin\gem.cmd"
+set irb_path="%loc%\runtimes\ruby\bin\irb.bat"
+set racc_path="%loc%\runtimes\ruby\bin\racc.bat"
+set rake_path="%loc%\runtimes\ruby\bin\rake.bat"
+set rbs_path="%loc%\runtimes\ruby\bin\rbs.bat"
+set rdbg_path="%loc%\runtimes\ruby\bin\rdbg.bat"
+set rdoc_path="%loc%\runtimes\ruby\bin\rdoc.bat"
+set ri_path="%loc%\runtimes\ruby\bin\ri.bat"
+set typeprof_path="%loc%\runtimes\ruby\bin\typeprof.bat"
 rem TODO: set "nuget_path=%loc%\runtimes\dotnet\nuget.exe"
 
 rem Additional Packages Paths
@@ -44,7 +44,7 @@ for /f "tokens=1,* delims= " %%a in ("%*") do set SUBPROGRAM_PARAMETERS=%%b
 setlocal ENABLEDELAYEDEXPANSION
 set package_manager=^^^!%1_path^^^!
 if not [%package_manager%]==[] (
-	call "%package_manager%" %SUBPROGRAM_PARAMETERS%
+	call %package_manager% %SUBPROGRAM_PARAMETERS%
 	exit /b %errorlevel%
 )
 endlocal
