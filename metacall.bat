@@ -12,7 +12,7 @@ set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts;%loc%\runti
 rem NodeJS
 set "PATH=%PATH%;%loc%\lib\runtimes\nodejs;%loc%\lib\runtimes\nodejs\lib"
 rem Ruby
-set "PATH=%PATH%;%loc%\lib\runtimes\ruby\bin;%loc%\lib\runtimes\ruby\bin\ruby_builtin_dlls"
+set "PATH=%PATH%;%loc%\runtimes\ruby\bin;%loc%\runtimes\ruby\bin;%loc%\runtimes\ruby\bin\ruby_builtin_dlls"
 rem DotNet Core
 set "PATH=%PATH%;%loc%\lib\runtimes\dotnet;%loc%\lib\runtimes\dotnet\host\fxr\5.0.12"
 
