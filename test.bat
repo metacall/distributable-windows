@@ -5,9 +5,9 @@ rem The format of commands (i.e tests/node/commands.txt) must always contain a n
 set "loc=%~dp0tests"
 
 echo Package Manager Test
-call metacall.bat npm install is-number
-call metacall.bat npm
-call metacall.bat pip
+call metacall npm install is-number
+call metacall npm
+call metacall pip
 
 echo NodeJS tests
 set "LOADER_SCRIPT_PATH=%loc%\node"
