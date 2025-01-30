@@ -5,9 +5,9 @@ rem The format of commands (i.e tests/node/commands.txt) must always contain a n
 set "loc=%~dp0tests"
 
 echo Package Manager Test
-call metacall npm
+call metacall npm --help
 if %errorlevel%==1 goto :test_fail
-call metacall pip
+call metacall pip --help
 if %errorlevel%==1 goto :test_fail
 
 echo NodeJS tests
