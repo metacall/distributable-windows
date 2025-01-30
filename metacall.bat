@@ -46,7 +46,9 @@ set package_manager=^^^!%1_path^^^!
 if not [%package_manager%]==[] (
 	echo call %package_manager% %SUBPROGRAM_PARAMETERS%
 	call %package_manager% %SUBPROGRAM_PARAMETERS%
-	exit /b %errorlevel%
+	set code=%errorlevel%
+	endlocal && set code=%code%
+	exit /b %code%
 )
 endlocal
 
