@@ -33,17 +33,18 @@ set rdbg_path="%loc%\runtimes\ruby\bin\rdbg.bat"
 set rdoc_path="%loc%\runtimes\ruby\bin\rdoc.bat"
 set ri_path="%loc%\runtimes\ruby\bin\ri.bat"
 set typeprof_path="%loc%\runtimes\ruby\bin\typeprof.bat"
-rem TODO: set "nuget_path=%loc%\runtimes\dotnet\nuget.exe"
+rem TODO: set nuget_path="%loc%\runtimes\dotnet\nuget.exe"
 
 rem Additional Packages Paths
-set "deploy_path=%~dp0\deps\deploy\metacall-deploy.cmd"
-set "faas_path=%~dp0\deps\faas\metacall-faas.cmd"
+set deploy_path="%~dp0\deps\deploy\metacall-deploy.cmd"
+set faas_path="%~dp0\deps\faas\metacall-faas.cmd"
 
 rem Check if it is running a package manager (or related binary) and execute it
 for /f "tokens=1,* delims= " %%a in ("%*") do set SUBPROGRAM_PARAMETERS=%%b
 setlocal ENABLEDELAYEDEXPANSION
 set package_manager=^^^!%1_path^^^!
 if not [%package_manager%]==[] (
+	echo call %package_manager% %SUBPROGRAM_PARAMETERS%
 	call %package_manager% %SUBPROGRAM_PARAMETERS%
 	exit /b %errorlevel%
 )
