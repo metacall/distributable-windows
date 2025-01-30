@@ -21,7 +21,7 @@ echo Successfull!!
 echo Node metacall test
 type "%loc%\node\commands.txt" | metacall ^> out.txt
 if %errorlevel%==1 goto :test_fail
-findstr "366667" out.txt || goto :test_fail 
+findstr "366667" out.txt || goto :test_fail_print
 type out.txt
 echo Successfull!!
 
@@ -39,12 +39,13 @@ echo Successfull!!
 echo Python metacall test
 type "%loc%\python\commands.txt" | metacall ^> out.txt
 if %errorlevel%==1 goto :test_fail
-findstr "Hello World" out.txt || goto :test_fail
+findstr "Hello World" out.txt || goto :test_fail_print
 type out.txt
 echo Successfull!!
 
 echo Ruby tests
 set "LOADER_SCRIPT_PATH=%loc%\ruby"
+set "PATH=%PATH%;%loc%\runtimes\ruby\bin;%loc%\runtimes\ruby\bin\ruby_builtin_dlls"
 
 echo Gem test
 call metacall gem install metacall
@@ -106,11 +107,14 @@ call metacall typeprof --version
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 
-del out.txt
 exit /b 0
 
 :test_fail
 echo Test Suite Failed!!
+exit /b 1
+
+:test_fail_print
 type out.txt
+echo Test Suite Failed!!
 del out.txt
 exit /b 1
