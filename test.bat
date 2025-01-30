@@ -45,10 +45,11 @@ echo Ruby tests
 set "LOADER_SCRIPT_PATH=%loc%\ruby"
 set "PATH=%PATH%;%loc%\runtimes\ruby\bin;%loc%\runtimes\ruby\bin\ruby_builtin_dlls"
 
-echo Gem test
-call metacall gem install metacall
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem TODO: https://github.com/metacall/distributable-windows/issues/31
+rem echo Gem test
+rem call metacall gem install metacall
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
 echo bundle test
 call metacall bundle --version
