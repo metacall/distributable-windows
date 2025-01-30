@@ -20,7 +20,7 @@ echo Successfull!!
 echo Node metacall test
 type "%loc%\node\commands.txt" | metacall.bat ^> out.txt
 if %errorlevel%==1 goto :test_fail
-type out.txt | findstr "366667" || goto :test_fail 
+findstr "366667" out.txt || goto :test_fail 
 echo Successfull!!
 
 echo Python tests
@@ -37,7 +37,7 @@ echo Successfull!!
 echo Python metacall test
 type "%loc%\python\commands.txt" | metacall.bat ^> out.txt 
 if %errorlevel%==1 goto :test_fail
-type out.txt | findstr "Hello World" || goto :test_fail
+findstr "Hello World" out.txt || goto :test_fail 
 echo Successfull!!
 
 echo Ruby tests
@@ -107,7 +107,7 @@ DEL out.txt
 exit /b 0
 
 :test_fail
-echo Test suite failed
+echo Test Suite Failed!!
 type out.txt
 DEL out.txt
 exit /b 1
