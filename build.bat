@@ -35,7 +35,7 @@ echo Downloading Dependencies
 mkdir "%loc%\dependencies"
 cd "%loc%\dependencies"
 
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/MSP-Greg/ruby-mswin/releases/download/ruby-mswin-builds/Ruby-3.1.2-ms.7z', './ruby-mswin.7z')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/ruby-mswin/releases/download/ruby-mswin-builds/Ruby-3.1.2-ms.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-win-x64.zip', './node.zip')" || goto :error
