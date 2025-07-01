@@ -35,7 +35,7 @@ echo Downloading Dependencies
 mkdir "%loc%\dependencies"
 cd "%loc%\dependencies"
 
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/ruby-mswin/releases/download/ruby-mswin-builds/Ruby-3.1.2-ms.7z', './ruby-mswin.7z')" || goto :error
+powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-win-x64.zip', './node.zip')" || goto :error
@@ -56,7 +56,7 @@ cd "%loc%\dependencies"
 rem Install Ruby
 set PATH=%PATH%;%programfiles%\7-Zip\
 7z x "%loc%\dependencies\ruby-mswin.7z" || goto :error
-robocopy /move /e "%loc%\dependencies\Ruby31-ms" %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
+robocopy /move /e "%loc%\dependencies\ruby-mswin" %loc%\runtimes\ruby /NFL /NDL /NJH /NJS /NC /NS /NP
 set "PATH=%PATH%;%loc%\runtimes\ruby\bin"
 
 rem Install Python
@@ -103,11 +103,12 @@ git clone --depth 1 https://github.com/metacall/core.git || goto :error
 set "escaped_loc=%loc:\=/%"
 
 rem Patch for FindRuby.cmake
-echo set(Ruby_VERSION 3.1.0)> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_VERSION_STRING "3.5.0")> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_INCLUDE_DIR "%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.1.0;%escaped_loc%/runtimes/ruby/include/ruby-3.1.0/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby310.lib")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby350.lib")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_LIBRARY_NAME "%escaped_loc%/runtimes/ruby/bin/x64-vcruntime140-ruby350.dll")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_LIBRARY_SEARCH_PATHS "%escaped_loc%/runtimes/ruby/bin/ruby_builtin_dlls")>> "%loc%\core\cmake\FindRuby.cmake"
 echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindRuby.cmake"
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Ruby REQUIRED_VARS Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS VERSION_VAR Ruby_VERSION)>> "%loc%\core\cmake\FindRuby.cmake"
 echo mark_as_advanced(Ruby_EXECUTABLE Ruby_LIBRARY Ruby_INCLUDE_DIRS)>> "%loc%\core\cmake\FindRuby.cmake"
@@ -196,8 +197,9 @@ rem Patch the C# Loader configuration
 echo { }> "%loc%\configurations\cs_loader.json"
 
 rem Move library dependencies to the correct folders
-move /Y "%loc%\runtimes\nodejs\lib\libnode.dll" "%loc%\lib"
-copy /Y "%loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll" "%loc%\lib"
+rem TODO: Test if removing this works
+rem move /Y "%loc%\runtimes\nodejs\lib\libnode.dll" "%loc%\lib"
+rem copy /Y "%loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll" "%loc%\lib"
 
 echo Compressing the Tarball
 cd %dest%
