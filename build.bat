@@ -103,8 +103,10 @@ git clone --depth 1 https://github.com/metacall/core.git || goto :error
 set "escaped_loc=%loc:\=/%"
 
 rem Patch for FindRuby.cmake
+echo set(Ruby_VERSION 3.5.0)> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_VERSION_STRING "3.5.0")> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_INCLUDE_DIR "%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0;%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_LIBRARY "%escaped_loc%/runtimes/ruby/lib/x64-vcruntime140-ruby350.lib")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_LIBRARY_NAME "%escaped_loc%/runtimes/ruby/bin/x64-vcruntime140-ruby350.dll")>> "%loc%\core\cmake\FindRuby.cmake"
@@ -195,11 +197,6 @@ rmdir /S /Q "%loc%\runtimes\python\Lib\test"
 
 rem Patch the C# Loader configuration
 echo { }> "%loc%\configurations\cs_loader.json"
-
-rem Move library dependencies to the correct folders
-rem TODO: Test if removing this works
-rem move /Y "%loc%\runtimes\nodejs\lib\libnode.dll" "%loc%\lib"
-rem copy /Y "%loc%\runtimes\ruby\bin\x64-vcruntime140-ruby310.dll" "%loc%\lib"
 
 echo Compressing the Tarball
 cd %dest%
