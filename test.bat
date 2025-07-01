@@ -7,9 +7,11 @@ set "loc=%~dp0tests"
 echo Package Manager Test
 call metacall npm
 call metacall pip
-call metacall gem
 
-echo NodeJS tests
+rem TODO: https://github.com/metacall/distributable-windows/issues/31
+rem call metacall gem
+
+echo NodeJS Tests
 set "LOADER_SCRIPT_PATH=%loc%\node"
 
 echo Npm Test
@@ -17,14 +19,14 @@ call metacall npm install is-number
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 
-echo Node metacall test
+echo Node Port Test
 type "%loc%\node\commands.txt" | metacall ^> out.txt
 if %errorlevel%==1 goto :test_fail
 findstr "366667" out.txt || goto :test_fail_print
 type out.txt
 echo Successfull!!
 
-echo Python tests
+echo Python Tests
 set "LOADER_SCRIPT_PATH=%loc%\python"
 
 echo Pip Test
@@ -32,78 +34,82 @@ call metacall pip install PyYAML
 if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 
-echo Python metacall test
+echo Python Port Test
 type "%loc%\python\commands.txt" | metacall ^> out.txt
 if %errorlevel%==1 goto :test_fail
 findstr "Hello World" out.txt || goto :test_fail_print
 type out.txt
 echo Successfull!!
 
-echo Ruby tests
+echo Ruby Tests
 set "LOADER_SCRIPT_PATH=%loc%\ruby"
 
 rem TODO: https://github.com/metacall/distributable-windows/issues/31
-rem echo Gem test
+rem echo Ruby gem Test
 rem call metacall gem install metacall
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo bundle test
+rem echo Ruby bundle Test
 rem call metacall bundle --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo bundler test
+rem echo Ruby bundler Test
 rem call metacall bundler --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo erb test
+rem echo Ruby erb Test
 rem call metacall erb --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo irb test
+rem echo Ruby irb Test
 rem call metacall irb --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo racc test
+rem echo Ruby racc Test
 rem call metacall racc --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo rake test
+rem echo Ruby rake Test
 rem call metacall rake --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo rbs test
+rem echo Ruby rbs Test
 rem call metacall rbs --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo rdbg test
+rem echo Ruby rdbg Test
 rem call metacall rdbg --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo rdoc test
+rem echo Ruby rdoc Test
 rem call metacall rdoc --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo ri test
+rem echo Ruby ri Test
 rem call metacall ri --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem echo typeprof test
+rem echo Ruby typeprof Test
 rem call metacall typeprof --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem TODO: Tests of executables
+rem Tests of executables
+
+
+
+
 
 exit /b 0
 

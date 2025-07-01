@@ -4,7 +4,7 @@
  *	MetaCall Distributable by Parra Studios
  *	Distributable infrastructure for MetaCall.
  *
- *	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+ *	Copyright (C) 2016 - 2025 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -20,15 +20,16 @@
  *
  */
 
-
-const path = require('path');
+const assert = require('node:assert');
 const { metacall, metacall_load_from_file, metacall_inspect } = require('metacall');
 
 // Test Monkey Patch
 const { three_str } = require('test.mock');
 
 // Test NPM
-require('is-number');
+const is_number = require('is-number');
+
+assert(is_number(3), true);
 
 module.exports = {
 	mock: function() {

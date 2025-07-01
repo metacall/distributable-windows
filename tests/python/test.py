@@ -4,7 +4,7 @@
 #	MetaCall Distributable by Parra Studios
 #	Distributable infrastructure for MetaCall.
 #
-#	Copyright (C) 2016 - 2020 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
+#	Copyright (C) 2016 - 2025 Vicente Eduardo Ferrer Garcia <vic798@gmail.com>
 #
 #	Licensed under the Apache License, Version 2.0 (the "License");
 #	you may not use this file except in compliance with the License.
@@ -21,12 +21,15 @@
 
 from metacall import metacall, metacall_load_from_file
 
-# TODO: Test monkey patch
+# Test monkey patch
+from sum.js import sum
+
+assert sum(1, 3) == 4
 
 # Test Pip
 import yaml
 
-metacall_load_from_file('mock', ['test.mock']);
+metacall_load_from_file('mock', ['test.mock'])
 
 def test():
-	return metacall('three_str', 'a', 'b', 'c');
+	return metacall('three_str', 'a', 'b', 'c')
