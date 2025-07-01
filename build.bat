@@ -104,7 +104,7 @@ set "escaped_loc=%loc:\=/%"
 
 rem Patch for FindRuby.cmake
 echo set(Ruby_VERSION 3.5.0)> "%loc%\core\cmake\FindRuby.cmake"
-echo set(Ruby_VERSION_STRING "3.5.0")> "%loc%\core\cmake\FindRuby.cmake"
+echo set(Ruby_VERSION_STRING "3.5.0")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_ROOT_DIR "%escaped_loc%/runtimes/ruby")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_INCLUDE_DIRS "%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0;%escaped_loc%/runtimes/ruby/include/ruby-3.5.0+0/x64-mswin64_140")>> "%loc%\core\cmake\FindRuby.cmake"
 echo set(Ruby_EXECUTABLE "%escaped_loc%/runtimes/ruby/bin/ruby.exe")>> "%loc%\core\cmake\FindRuby.cmake"
