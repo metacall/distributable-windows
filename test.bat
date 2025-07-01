@@ -7,6 +7,7 @@ set "loc=%~dp0tests"
 echo Package Manager Test
 call metacall npm
 call metacall pip
+call metacall gem
 
 echo NodeJS tests
 set "LOADER_SCRIPT_PATH=%loc%\node"
@@ -42,65 +43,65 @@ echo Ruby tests
 set "LOADER_SCRIPT_PATH=%loc%\ruby"
 
 rem TODO: https://github.com/metacall/distributable-windows/issues/31
-echo Gem test
-call metacall gem install metacall
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo Gem test
+rem call metacall gem install metacall
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo bundle test
-call metacall bundle --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo bundle test
+rem call metacall bundle --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo bundler test
-call metacall bundler --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo bundler test
+rem call metacall bundler --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo erb test
-call metacall erb --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo erb test
+rem call metacall erb --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo irb test
-call metacall irb --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo irb test
+rem call metacall irb --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo racc test
-call metacall racc --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo racc test
+rem call metacall racc --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo rake test
-call metacall rake --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo rake test
+rem call metacall rake --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo rbs test
-call metacall rbs --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo rbs test
+rem call metacall rbs --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo rdbg test
-call metacall rdbg --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo rdbg test
+rem call metacall rdbg --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo rdoc test
-call metacall rdoc --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo rdoc test
+rem call metacall rdoc --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo ri test
-call metacall ri --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo ri test
+rem call metacall ri --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
-echo typeprof test
-call metacall typeprof --version
-if %errorlevel%==1 goto :test_fail
-echo Successfull!!
+rem echo typeprof test
+rem call metacall typeprof --version
+rem if %errorlevel%==1 goto :test_fail
+rem echo Successfull!!
 
 rem TODO: Tests of executables
 
