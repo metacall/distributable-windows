@@ -2,6 +2,7 @@
 
 rem The format of commands (i.e tests/node/commands.txt) must always contain a new line at the end
 
+set "runtimes=%~dp0metacall\runtimes"
 set "loc=%~dp0tests"
 
 echo Package Manager Test
@@ -105,11 +106,21 @@ rem call metacall typeprof --version
 rem if %errorlevel%==1 goto :test_fail
 rem echo Successfull!!
 
-rem Tests of executables
+rem TODO: Ruby Test
+rem TODO: Ruby Port Test
 
+echo Tests Executables
+set "LOADER_SCRIPT_PATH="
 
+echo NodeJS Executable Test
+"%runtimes%\nodejs\node.exe" "%loc%\node\test.js"
+if %errorlevel%==1 goto :test_fail
 
+echo Python Executable Test
+"%runtimes%\python\python.exe" "%loc%\python\test.py"
+if %errorlevel%==1 goto :test_fail
 
+rem TODO: Ruby Executable Test
 
 exit /b 0
 
