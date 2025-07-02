@@ -186,7 +186,8 @@ set "PYTHONHOME=%loc%\runtimes\python"
 set "PIP_TARGET=%loc%\runtimes\python\Lib\site-packages"
 set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts;%loc%\runtimes\python\Lib\site-packages\bin"
 
-"%loc%\runtimes\python\Scripts\pip3.exe" install "%loc%\core\source\ports\py_port"
+"%loc%\runtimes\python\python.exe" -m pip install "%loc%\core\source\ports\py_port"
+if %errorlevel%==1 exit /b 1
 
 rem Delete unnecesary data from tarball directory
 cd %loc%
