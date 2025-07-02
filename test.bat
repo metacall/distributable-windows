@@ -113,10 +113,12 @@ echo Tests Executables
 set "LOADER_SCRIPT_PATH="
 
 echo NodeJS Executable Test
+"%runtimes%\nodejs\npm.cmd" install --prefix="%loc%\node" metacall
 "%runtimes%\nodejs\node.exe" "%loc%\node\test.js"
 if %errorlevel%==1 goto :test_fail
 
 echo Python Executable Test
+"%runtimes%\python\python.exe" -m pip install metacall
 "%runtimes%\python\python.exe" "%loc%\python\test.py"
 if %errorlevel%==1 goto :test_fail
 
