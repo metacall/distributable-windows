@@ -36,6 +36,7 @@ if %errorlevel%==1 goto :test_fail
 echo Successfull!!
 
 echo Python Port Test
+call metacall pip install metacall
 type "%loc%\python\commands.txt" | metacall ^> out.txt
 if %errorlevel%==1 goto :test_fail
 findstr "Hello World" out.txt || goto :test_fail_print
