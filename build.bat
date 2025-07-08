@@ -37,7 +37,8 @@ cd "%loc%\dependencies"
 
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/ruby-loco/releases/download/ruby-master/ruby-mswin.7z', './ruby-mswin.7z')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://www.python.org/ftp/python/3.9.7/python-3.9.7-amd64.exe', './python_installer.exe')" || goto :error
-powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
+@rem TODO: Disable C# for now until we make it work: https://github.com/metacall/distributable-windows/issues/13
+@rem powershell -Command "(New-Object Net.WebClient).DownloadFile('https://download.visualstudio.microsoft.com/download/pr/25a8e07d-21fb-46fe-a21e-33c7972d4683/50ba527abe01a9619ace5d8cc2450b70/dotnet-sdk-7.0.101-win-x64.zip', './dotnet_sdk.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-win-x64.zip', './node.zip')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://nodejs.org/download/release/v20.11.0/node-v20.11.0-headers.tar.gz', './node_headers.tar.gz')" || goto :error
 powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/metacall/node.dll/releases/download/v0.0.6/node-shared-v20.11.0-x64.zip', './node_dll.zip')" || goto :error
@@ -48,7 +49,8 @@ echo Installing Runtimes
 mkdir "%loc%\runtimes"
 mkdir "%loc%\runtimes\ruby"
 mkdir "%loc%\runtimes\python"
-mkdir "%loc%\runtimes\dotnet"
+@rem TODO: Disable C# for now until we make it work: https://github.com/metacall/distributable-windows/issues/13
+@rem mkdir "%loc%\runtimes\dotnet"
 mkdir "%loc%\runtimes\nodejs"
 
 cd "%loc%\dependencies"
@@ -68,14 +70,15 @@ python_installer.exe /uninstall || goto :error
 python_installer.exe /quiet TargetDir="%loc%\runtimes\python" PrependPath=1 CompileAll=1 || goto :error
 set "PATH=%PATH%;%loc%\runtimes\python;%loc%\runtimes\python\Scripts"
 
-rem Install DotNet
-powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath "%loc%\runtimes\dotnet" || goto :error
-git clone --branch v5.0.12 --depth 1 --single-branch https://github.com/dotnet/runtime.git "%loc%\runtimes\dotnet\runtime"
-mkdir "%loc%\runtimes\dotnet\include"
-robocopy /move /e "%loc%\runtimes\dotnet\runtime\src\coreclr\src\pal" "%loc%\runtimes\dotnet\include\pal" /NFL /NDL /NJH /NJS /NC /NS /NP
-robocopy /move /e "%loc%\runtimes\dotnet\runtime\src\coreclr\src\inc" "%loc%\runtimes\dotnet\include\inc" /NFL /NDL /NJH /NJS /NC /NS /NP
-rmdir /S /Q "%loc%\runtimes\dotnet\runtime"
-set "PATH=%PATH%;%loc%\runtimes\dotnet"
+@rem TODO: Disable C# for now until we make it work: https://github.com/metacall/distributable-windows/issues/13
+@rem rem Install DotNet
+@rem powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "dotnet_sdk.zip" -DestinationPath "%loc%\runtimes\dotnet" || goto :error
+@rem git clone --branch v5.0.12 --depth 1 --single-branch https://github.com/dotnet/runtime.git "%loc%\runtimes\dotnet\runtime"
+@rem mkdir "%loc%\runtimes\dotnet\include"
+@rem robocopy /move /e "%loc%\runtimes\dotnet\runtime\src\coreclr\src\pal" "%loc%\runtimes\dotnet\include\pal" /NFL /NDL /NJH /NJS /NC /NS /NP
+@rem robocopy /move /e "%loc%\runtimes\dotnet\runtime\src\coreclr\src\inc" "%loc%\runtimes\dotnet\include\inc" /NFL /NDL /NJH /NJS /NC /NS /NP
+@rem rmdir /S /Q "%loc%\runtimes\dotnet\runtime"
+@rem set "PATH=%PATH%;%loc%\runtimes\dotnet"
 
 rem Install NodeJS
 powershell -Command "$global:ProgressPreference = 'SilentlyContinue'; Expand-Archive" -Path "node.zip" -DestinationPath "%loc%\runtimes\nodejs" || goto :error
@@ -128,21 +131,23 @@ echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindPython3.cmak
 echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(Python REQUIRED_VARS Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS VERSION_VAR Python_VERSION)>> "%loc%\core\cmake\FindPython3.cmake"
 echo mark_as_advanced(Python_EXECUTABLE Python_LIBRARIES Python_INCLUDE_DIRS)>> "%loc%\core\cmake\FindPython3.cmake"
 
-rem Patch for FindCoreCLR.cmake
-echo set(CoreCLR_VERSION 5.0.12)> "%loc%\core\cmake\FindCoreCLR.cmake"
-echo set(DOTNET_CORE_PATH "%escaped_loc%/runtimes/dotnet/shared/Microsoft.NETCore.App/5.0.12")>> "%loc%\core\cmake\FindCoreCLR.cmake"
-echo set(CORECLR_INCLUDE_DIR "%escaped_loc%/runtimes/dotnet/include")>> "%loc%\core\cmake\FindCoreCLR.cmake"
-echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindCoreCLR.cmake"
-echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(CoreCLR REQUIRED_VARS DOTNET_CORE_PATH CORECLR_INCLUDE_DIR VERSION_VAR CoreCLR_VERSION)>> "%loc%\core\cmake\FindCoreCLR.cmake"
-echo mark_as_advanced(DOTNET_CORE_PATH CORECLR_INCLUDE_DIR)>> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem TODO: Disable C# for now until we make it work: https://github.com/metacall/distributable-windows/issues/13
+@rem rem Patch for FindCoreCLR.cmake
+@rem echo set(CoreCLR_VERSION 5.0.12)> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem echo set(DOTNET_CORE_PATH "%escaped_loc%/runtimes/dotnet/shared/Microsoft.NETCore.App/5.0.12")>> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem echo set(CORECLR_INCLUDE_DIR "%escaped_loc%/runtimes/dotnet/include")>> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(CoreCLR REQUIRED_VARS DOTNET_CORE_PATH CORECLR_INCLUDE_DIR VERSION_VAR CoreCLR_VERSION)>> "%loc%\core\cmake\FindCoreCLR.cmake"
+@rem echo mark_as_advanced(DOTNET_CORE_PATH CORECLR_INCLUDE_DIR)>> "%loc%\core\cmake\FindCoreCLR.cmake"
 
-rem Patch for FindDotNET.cmake
-echo set(DOTNET_VERSION 5.0.12)> "%loc%\core\cmake\FindDotNET.cmake"
-echo set(DOTNET_MIGRATE 1)>> "%loc%\core\cmake\FindDotNET.cmake"
-echo set(DOTNET_COMMAND "%escaped_loc%/runtimes/dotnet/dotnet.exe")>> "%loc%\core\cmake\FindDotNET.cmake"
-echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindDotNET.cmake"
-echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNET_MIGRATE VERSION_VAR DOTNET_VERSION)>> "%loc%\core\cmake\FindDotNET.cmake"
-echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> "%loc%\core\cmake\FindDotNET.cmake"
+@rem TODO: Disable C# for now until we make it work: https://github.com/metacall/distributable-windows/issues/13
+@rem rem Patch for FindDotNET.cmake
+@rem echo set(DOTNET_VERSION 5.0.12)> "%loc%\core\cmake\FindDotNET.cmake"
+@rem echo set(DOTNET_MIGRATE 1)>> "%loc%\core\cmake\FindDotNET.cmake"
+@rem echo set(DOTNET_COMMAND "%escaped_loc%/runtimes/dotnet/dotnet.exe")>> "%loc%\core\cmake\FindDotNET.cmake"
+@rem echo include(FindPackageHandleStandardArgs)>> "%loc%\core\cmake\FindDotNET.cmake"
+@rem echo FIND_PACKAGE_HANDLE_STANDARD_ARGS(DotNET REQUIRED_VARS DOTNET_COMMAND DOTNET_MIGRATE VERSION_VAR DOTNET_VERSION)>> "%loc%\core\cmake\FindDotNET.cmake"
+@rem echo mark_as_advanced(DOTNET_COMMAND DOTNET_MIGRATE DOTNET_VERSION)>> "%loc%\core\cmake\FindDotNET.cmake"
 
 rem Patch for FindNodeJS.cmake
 echo set(NodeJS_VERSION 20.11.0)> "%loc%\core\cmake\FindNodeJS.cmake"
@@ -160,7 +165,8 @@ cd "%loc%\core\build"
 
 rem Build MetaCall
 cmake -Wno-dev ^
-	-DCMAKE_BUILD_TYPE=Release ^
+	-DCMAKE_BUILD_TYPE=RelWithDebInfo ^
+	-DOPTION_BUILD_PLUGINS_BACKTRACE=ON ^
 	-DOPTION_BUILD_SECURITY=OFF ^
 	-DOPTION_FORK_SAFE=OFF ^
 	-DOPTION_BUILD_SCRIPTS=OFF ^
@@ -169,7 +175,7 @@ cmake -Wno-dev ^
 	-DOPTION_BUILD_LOADERS_PY=ON ^
 	-DOPTION_BUILD_LOADERS_NODE=ON ^
 	-DNPM_ROOT="%escaped_loc%/runtimes/nodejs" ^
-	-DOPTION_BUILD_LOADERS_CS=ON ^
+	-DOPTION_BUILD_LOADERS_CS=OFF ^
 	-DOPTION_BUILD_LOADERS_RB=ON ^
 	-DOPTION_BUILD_LOADERS_TS=ON ^
 	-DOPTION_BUILD_PORTS=ON ^
