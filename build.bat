@@ -206,6 +206,10 @@ rmdir /S /Q "%loc%\runtimes\python\Lib\test"
 rem Patch the C# Loader configuration
 echo { }> "%loc%\configurations\cs_loader.json"
 
+rem Make the paths of configurations relative
+powershell -ExecutionPolicy Bypass -File "config.ps1" -loc "%loc%"
+if %errorlevel%==1 exit /b 1
+
 echo Compressing the Tarball
 cd %dest%
 cmake -E tar "cf" "%dest%\metacall-tarball-win-x64.zip" --format=zip "%loc%" "%dest%\metacall.bat"
