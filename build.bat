@@ -207,7 +207,7 @@ rem Patch the C# Loader configuration
 echo { }> "%loc%\configurations\cs_loader.json"
 
 rem Make the paths of configurations relative
-powershell -ExecutionPolicy Bypass -File "config.ps1" -loc "%loc%"
+powershell -ExecutionPolicy Bypass -File "%dest%\config.ps1" -loc "%loc%"
 if %errorlevel%==1 exit /b 1
 
 echo Compressing the Tarball
