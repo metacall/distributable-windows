@@ -187,6 +187,9 @@ cmake --build . --target install || goto :error
 
 echo MetaCall Built Successfully
 
+rem Move metacall.dll to lib folder
+move /Y "%loc%\metacall.dll" "%loc%\lib"
+
 rem Patch for fixing install phase of py_port (https://gitlab.kitware.com/cmake/cmake/-/issues/25835#note_1502642)
 set "PYTHONHOME=%loc%\runtimes\python"
 set "PIP_TARGET=%loc%\runtimes\python\Lib\site-packages"
@@ -221,3 +224,4 @@ rem Handle error
 :error
 echo Failed with error #%errorlevel%
 exit /b %errorlevel%
+
